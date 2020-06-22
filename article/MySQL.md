@@ -24,11 +24,11 @@
 
 
 
-1、解压
+### 1、解压
 
-2、在解压目录增加my.ini文件
+### 2、在解压目录增加my.ini文件
 
-2.1、文件里面写
+#### 2.1、文件里面写
 
 ```ini
 [mysqld]
@@ -40,9 +40,9 @@ datadir=D:\\software\\databse\\mysql\\mysql-8.0.20-winx64\\data
 
 注意windows里面路径要么写 /  要么写 \\\\ 
 
-3、选择类型？？
+### 3、选择类型？？
 
-4、初始化
+### 4、初始化
 
 mysqld --install
 
@@ -109,11 +109,11 @@ mysqld --install
 2020-06-22T15:18:08.551178Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: N27m-&R0rmfy
 ```
 
-5、启动
+### 5、启动
 
 `net start mysql`
 
-6、连接
+### 6、连接
 
 mysql -u roo -p  回车
 
