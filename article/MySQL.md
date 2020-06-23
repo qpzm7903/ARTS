@@ -124,3 +124,9 @@ mysql -u roo -p  回车
 ```sql
 ALTER USER 'root'@'localhost' identified with mysql_native_password by 'admin';
 ```
+
+
+
+## 参考
+
+https://zhuanlan.zhihu.com/p/75891315
