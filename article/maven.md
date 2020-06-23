@@ -222,3 +222,152 @@ Main-Class: org.springframework.boot.loader.JarLauncher
 
 ### 依赖调解
 
+第二直接依赖如果是可选依赖，那么就不会被第一依赖给引用。
+
+比如项目A依赖于项目B，项目B依赖了两个可选依赖X，Y，那么X和Y不会对A产生影响。
+
+### 依赖原则
+
+#### 优先声明原则
+
+如果
+
+A->B->E(1.0)
+
+A->C->E(2.0)
+
+结果会依赖出什么？
+
+以以下三个项目依赖为例：
+
+child2
+
+```xml
+<dependencies>
+
+    <dependency>
+        <version>1.0-SNAPSHOT</version>
+        <groupId>org.example</groupId>
+        <artifactId>child2-child1</artifactId>
+    </dependency>
+    <dependency>
+        <version>1.0-SNAPSHOT</version>
+        <groupId>org.example</groupId>
+        <artifactId>child2-child2</artifactId>
+    </dependency>
+</dependencies>
+```
+
+child2-child1
+
+```xml
+<dependencies>
+    <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+    <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>29.0-jre</version>
+    </dependency>
+
+</dependencies>
+```
+
+child2-child2
+
+```xml
+<dependencies>
+    <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+    <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>28.2-jre</version>
+    </dependency>
+
+</dependencies>
+```
+
+然后输出依赖树
+
+![image-20200624072513582](image-20200624072513582.png)
+
+改变child2中依赖的顺序为
+
+```xml
+<dependencies>
+    <dependency>
+        <version>1.0-SNAPSHOT</version>
+        <groupId>org.example</groupId>
+        <artifactId>child2-child2</artifactId>
+    </dependency>
+    <dependency>
+        <version>1.0-SNAPSHOT</version>
+        <groupId>org.example</groupId>
+        <artifactId>child2-child1</artifactId>
+    </dependency>
+
+</dependencies>
+```
+
+此时的依赖树为
+
+![image-20200624072628120](image-20200624072628120.png)
+
+
+
+所以相同路径长度的不同版本依赖，取决于声明的顺序
+
+
+
+#### 最短路径原则
+
+
+
+如果
+
+A->B->E（1.0）
+
+A->E（2.0）
+
+结果会依赖什么？
+
+会依赖E（2.0）
+
+
+
+#### 重复引入原则
+
+如果一个项目重复引入了一个包的多个版本，那么已最后一个声明为主。
+
+
+
+### 排除依赖
+
+依赖的传递带来很多好处，但是也有很多问题，比如不知道第三方依赖具体会带来什么依赖，比如第三方依赖本身依赖了一些不稳定的、有漏洞的版本，那么就可以用依赖排除给排除掉。然后在本身项目引入一个稳定、安全的版本。
+
+### 依赖归类
+
+比如引入多个spring的包，但是版本都是一样的，避免多个地方重复的声明版本，可以通过引入变量的方式达到。比如
+
+```xml
+<properties>
+	<springframework.version>2.3.1.RELEASE</springframework.version>
+</properties>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+     <version>${springframwork.versoin}</version>
+</dependency>
+```
+
+### 优化依赖
+
+`mvn dependency:list` 列出当前项目已解析的依赖
+
+`mvn dependency:tree` 依赖树
+
+`mvn dependency:analyze`
+
+
+
+## 仓库
