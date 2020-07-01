@@ -732,17 +732,75 @@ create table phone
 
 
 
+双向关系的时候，管理子集合的状态也是比较高效的，只需对person进行一次更新就可以，如果想要把子项的生命周期给父项管理，那么`orphanRemoval = true`设置就可以。
+
+`orphanRemoval = true`就是子必须依赖于父的存在。
 
 
 
+##### 双向关系的序列化死循环问题：
+
+在get 或者 set方法将下层的引用设置为空
+
+```java
+    public List<Phone> getPhones() {
+        if (CollectionUtils.isEmpty(phones)) {
+            return new ArrayList<>();
+        }
+        phones.forEach(phone -> phone.setPerson(null));
+        return phones;
+    }
+
+    public void setPhones(List<Phone> phones) {
+        if (CollectionUtils.isEmpty(phones)) {
+            return;
+        }
+        phones.forEach(phone -> phone.setPerson(this));
+        this.phones = phones;
+    }
+```
+
+但是这样处理的话查询两个手机的时候，关联的person会null比如。
+
+![image-20200701084033330](image-20200701084033330.png)
 
 
 
+查询所有手机的时候。
 
 
 
+```json
+[
+    {
+        "id": 4,
+        "number": "001",
+        "person": {
+            "id": 1,
+            "name": "12",
+            "phones": [
+                {
+                    "id": 4,
+                    "number": "001",
+                    "person": null
+                },
+                {
+                    "id": 5,
+                    "number": "002",
+                    "person": null
+                }
+            ]
+        }
+    },
+    {
+        "id": 5,
+        "number": "002",
+        "person": null
+    }
+]
+```
 
-
+id为5的person就没了。
 
 
 
