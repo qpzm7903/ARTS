@@ -802,11 +802,117 @@ create table phone
 
 id为5的person就没了。
 
+这种方式不好。
+
+
+
+不要把对象直接返回，要构造一个VO返回，VO里面把循环断掉。
+
+或者，把多的那方加上序列化忽略的注解。
+
+比如
+
+```java
+@Data
+@Entity
+public class Phone {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(name = "`number`")
+    private String number;
+
+    @ManyToOne
+    @JsonIgnore
+    private Person person;
+}
+```
+
+然后这个时候请求phone和person的结果分别是
+
+```json
+person
+[
+    {
+        "id": 1,
+        "name": "12",
+        "phones": [
+            {
+                "id": 4,
+                "number": "001"
+            },
+            {
+                "id": 5,
+                "number": "002"
+            }
+        ]
+    }
+]
+
+phone
+[
+    {
+        "id": 4,
+        "number": "001"
+    },
+    {
+        "id": 5,
+        "number": "002"
+    }
+]
+```
 
 
 
 
 
+这个时候能够在更新person的时候把phone一起传进去，但是没法在更新phone的时候把person一起更新了，因为phone序列化的时候忽略了person，参数穿不进去。
+
+所以还是需要一个入参的VO？可以
+
+
+
+##### 双向关系的更新
+
+如果不对更新逻辑做单独处理，那么
+
+从one的一侧更新的时候，可以更新many的一侧，比如
+
+```json
+{
+    "id": 1,
+    "name": "12",
+    "phones": [
+        {
+            "id": 4,
+            "number": "001",
+            "cpu": "985",
+            "size": 10,
+            "batteryCapacity": 0
+        },
+        {
+            "id": 9,
+            "number": "822",
+            "cpu": "1010",
+            "size": 6,
+            "batteryCapacity": 5000
+        }
+    ]
+}
+```
+
+这样相当于是覆盖更新。并且在更新的时候，要将phone里面的person引用给设置上，不然的话不会进行更新。
+
+
+
+那么增量更新怎么做？
+
+
+
+
+
+然后从many一侧更新one的一侧的时候
 
 
 
