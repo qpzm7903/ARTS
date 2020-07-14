@@ -371,3 +371,300 @@ A->E（2.0）
 
 
 ## 仓库
+
+### 仓库分类
+
+分为远程仓库和本地仓库
+
+寻找时先找本地，再找远程。
+
+中心仓库是maven自带的远程仓库。
+
+私服也是远程仓库，只不过是架设再局域网内。![mavenrepository](mavenrepository.png)
+
+
+
+maven自带的仓库在maven安装目录下的
+
+`M2_HOME\lib\maven-model-builder-3.6.3.jar`
+
+打开这个jar里面的
+
+`maven-model-builder-3.6.3.jar\org\apache\maven\model\pom-4.0.0.xml`
+
+里面有定义
+
+```xml
+  <repositories>
+    <repository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+```
+
+这个pom文件是所有maven项目都会继承的超级pom。
+
+
+
+### 配置远程仓库
+
+```xml
+<repositories>
+    <repository>
+        <id>rep_id</id>
+        <name>rep name</name>
+        <url>rep url</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>daily</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy>
+        </snapshots>
+    </repository>
+</repositories>
+```
+
+id是唯一的，可以被覆盖，release和快照都可以设置更新策略，有never，daily，always，interval
+
+
+
+### 认证
+
+
+
+访问远程仓库的时候有时候会需要账号密码，这个必须在setting文件里面配置。
+
+```xml
+  <servers>
+    <!-- server
+     | Specifies the authentication information to use when connecting to a particular server, identified by
+     | a unique name within the system (referred to by the 'id' attribute below).
+     |
+     | NOTE: You should either specify username/password OR privateKey/passphrase, since these pairings are
+     |       used together.
+     |
+    <server>
+      <id>deploymentRepo</id>
+      <username>repouser</username>
+      <password>repopwd</password>
+    </server>
+    -->
+
+    <!-- Another sample, using keys to authenticate.
+    <server>
+      <id>siteServer</id>
+      <privateKey>/path/to/private/key</privateKey>
+      <passphrase>optional; leave empty if not used.</passphrase>
+    </server>
+    -->
+  </servers>
+```
+
+setting里的认证id要和pom里面设置的仓库id一致。
+
+
+
+### 部署到远程仓库
+
+再deploy的时候可以将包上传到远程仓库，这个需要配置pom文件
+
+```xml
+<distributionManagement>
+    <repository>
+        <id>rep id</id>
+        <name>rep name</name>
+        <url>rep url</url>
+    </repository>
+    <snapshotRepository>
+        <id> rep id</id>
+        <name>rep name</name>
+        <url>rep url</url>
+    </snapshotRepository>
+</distributionManagement>
+```
+
+分别对应release和快照版本的仓库。
+
+
+
+### 快照版本是什么
+
+防止开发版本的依赖经常需要变动，用快照就不用一直变。 
+
+maven默认参数是每天更新一次，可以强行更新
+
+```mvn clean install -U```
+
+
+
+### 镜像
+
+
+
+
+
+
+
+## 继承与聚合
+
+聚合就是把项目的模块聚合在一起构建。聚合pom所在的模块打包要是pom的，子模块是jar。
+
+继承就是抽取模块相同的依赖和插件等配置
+
+
+
+
+
+### 聚合
+
+在pom文件中添加 modules标签，然后添加子模块，子模块的路径是相对于当前pom文件的。
+
+当构建的时候，maven会解析各个模块的pom，计算出一个反应堆构建顺序 reactor build order，然后根据这个顺序构建各个模块。
+
+
+
+### 继承
+
+groupid 和 version是会被继承的。
+
+比如properties、dependencies、dependencyManagement、repositories、build、都会继承。
+
+dependencyManagement声明的依赖不会引入到子模块，也不会引入到父模块。
+
+但是这个配置是可以继承的。
+
+子模块只需要在dependencies中将要用的artifactId和groupid引入就可以。version就在dependencyManagement里面维护了。这样能够统一版本，降低版本冲突的可能性。
+
+
+
+## 灵活的构建
+
+属性、profile、资源过滤
+
+
+
+### 属性
+
+使用属性可以减少重复
+
+内置属性
+
+POM属性
+
+自定义属性
+
+```xml
+<properties>
+    <springframework.version>2.3.1.RELEASE</springframework.version>
+</properties>
+```
+
+Settings属性
+
+Java系统属性
+
+环境变量属性
+
+
+
+### profile
+
+
+
+### 资源过滤
+
+打包的时候，要让项目里的资源目录一同打包，这个是由maven-resources-plugin插件做的事情，它将项目的资源文件复制到编译后的目录中，将测试的资源文件复制到测试的编译目录下。
+
+资源过滤就是指：进行占位符替换。
+
+比如在配置文件application.properties文件中配置了
+
+db.name=${db.name}
+
+然后进行了资源过滤。在pom文件里面定义了这个属性。
+
+如果定义了profile，那么编译的时候可以指定用哪个profile，profile里面可以定义properties，那么就可以这样来定义不同的打包命令对应不同的环境了。
+
+
+
+例子：
+
+application.properties
+
+```properties
+db.name=${db.name}
+```
+
+
+
+```xml
+<properties>
+    <db.name>not dev profile</db.name>
+</properties>
+
+<profiles>
+    <profile>
+        <id>dev</id>
+        <properties>
+            <db.name>testName</db.name>
+        </properties>
+    </profile>
+</profiles>
+<build>
+    <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+            <filtering>true</filtering>
+        </resource>
+    </resources>
+</build>
+```
+
+这样编译或者打包的时候
+
+如果指定profile是dev，那么就会被提花昵称testName
+
+如果不指定，就会替换成 not dev profile。
+
+打包后如下
+
+![image-20200713231647895](image-20200713231647895.png)
+
+
+
+### 资源不进行二次编码
+
+maven编译的时候会将文件进行二次编码，但是一些文件不需要，所以要手动去掉。
+
+```xml
+<build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <!-- maven编译下面扩展类型文件的时候直接复制原文件，而不会进行二次编码-->
+                    <nonFilteredFileExtensions>
+                        <extension>zip</extension>
+                        <extension>rar</extension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+   
+```
+
+这样的话就不会被二次编码，导致一些文件被破坏打不开。
+
+
+
+继承的pom文件会这样吗

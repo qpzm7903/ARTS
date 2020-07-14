@@ -908,13 +908,92 @@ phone
 
 那么增量更新怎么做？
 
-
+将对象查询出来，把id相同的对象进行赋值，id没传入的可以继续删除或者不处理。
 
 
 
 然后从many一侧更新one的一侧的时候
 
+也支持。
 
+
+
+双向关系中，如果外键可以为空，那么可以直接将外键置为空即可。
+
+如果声明周期为one的一侧管理，那么需要再one的一侧上架上orphanRemoval的属性，这样可以让one被删除的时候，many也跟着给删除。
+
+
+
+
+
+#### 2.7.3 @OneToOne
+
+##### 单向
+
+和外键差不多，加注解的一侧拥有关系
+
+比如
+
+```java
+@Data
+@Entity
+public class Phone {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "detail_id")
+
+    private PhoneDetails phoneDetails;
+
+}
+
+@Data
+@Entity
+@Table
+public class PhoneDetails {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String provider;
+
+    private String technology;
+}
+```
+
+那么建表为
+
+```sql
+create table phone_details
+(
+    id         bigint       not null
+        primary key,
+    provider   varchar(255) null,
+    technology varchar(255) null
+);
+
+create table phone
+(
+    id               bigint       not null
+        primary key,
+    detail_id        bigint       null,
+    constraint FKcihlnb7bgdv8rqtuse6yyc3fb
+        foreign key (detail_id) references phone_details (id)
+);
+```
+
+会在phone那边及了一个外键id，并且因为在oneToOne注解上加了级联所有的注解，创建的时候就可以级联创建了。
+
+
+
+##### 双向
+
+detail是依赖于phone而存在的，所以更自然的想法是将外键记录再detail上，并且phone上也能找到detail，那么就用双向关联的oneToOne。
+
+如下
 
 
 
