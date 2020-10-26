@@ -1,4 +1,4 @@
-# lambda
+# lambda 
 
 ## 基本语法
 
@@ -7,6 +7,10 @@
 or
 
 (parameters)->{statements;}
+
+
+
+parameters可以有参数类型
 
 
 
@@ -48,6 +52,10 @@ public interface Function<T,R>{
 
 
 
+## 再哪里使用
+
+函数式接口的地方
+
 
 
 ## 异常
@@ -71,6 +79,10 @@ number = 2;
 原因：
 
 局部变量在栈帧上，类变量在堆上，lambda在另一个线程使用的时候，可能在这个局部变量被回收后去访问，那么访问的实际是这个变量的副本？？
+
+
+
+同一个lambda可以对应到多个函数式接口，只要方法签名一致就行。
 
 
 
@@ -240,11 +252,375 @@ map:对流中每个元素应用函数
 
 flatmap:扁平化
 
+场景
+
+给个list`["hello","world"]`得到每个字母的的一个list
+
+三个尝试
+
+```java
+        List<String[]> collect = Stream
+                .of("hello", "world")
+                .map(word -> word.split(""))
+                .collect(toList());
+
+        List<Stream<String>> collect1 = Stream
+                .of("hello", "world")
+                .map(word -> word.split(""))
+                .map(Arrays::stream)
+                .collect(toList());
+
+        List<String> collect2 = Stream
+                .of("hello", "world")
+                .map(word -> word.split(""))
+                .flatMap(Arrays::stream)
+                .collect(toList());
+```
+
+看看flatmap的签名
+
+```java
+    <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper);
+```
+
+flatmap方法让你把一个流中的每个值都换成另一个流，然后把所有的流连接起来成为一个流。
+
+
+
+## 查找与匹配
+
+StreamAPI通过allMatch、anyMatch、noneMatch、findFirst和findAny方法提供了这样的工具。
+
+这些操作都是会短路的，类似 and or
+
+
+
+## 归约
+
+reduce
+
+### 元素求和
+
+```java
+    @Test
+    public void test_reduce() {
+        List<Integer> integers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        Integer reduce = integers.stream().reduce(0, (a, b) -> a + b);
+        System.out.println(reduce);
+    }
+```
+
+看这个reduce的签名
+
+```java
+T reduce(T identity, BinaryOperator<T> accumulator);
+```
+
+doc里面写着等价于
+
+```java
+ T result = identity;
+ for (T element : this stream)
+     result = accumulator.apply(result, element)
+ return result;
+```
+变体
+
+```java
+Optional<Integer> reduce1 = integers.stream().reduce((a, b) -> a + b);
+```
+
+返回的是Optional，因为没有初始值，可能为空。
+
+
+
+### 求最大值、最小值
+
+```java
+List<Integer> integers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+Optional<Integer> max = integers.stream().reduce((a, b) -> a > b ? a : b);
+System.out.println(max.get());  // 10
+max = integers.stream().reduce(Integer::max);
+System.out.println(max.get()); // 10
+
+
+Optional<Integer> min = integers.stream().reduce((a, b) -> a > b ? b : a);
+System.out.println(min.get()); // 0
+min = integers.stream().reduce(Integer::min);
+System.out.println(min.get()); // 0
+```
+
+
+
+### 有状态操作、界限
+
+排序、删除重复都是要知道之前的记录才能做
+
+有些操作是区分界限的。
+
+暂时不好解释
+
+只有中间操作可能由状态与界
+
+
+
+## 数值流
+
+### 原始流
+
+为了避免box和unbox，Stream提供了原始类型流。比如IntStream，DoubleStream，LongStream
+
+
+
+常用方法由
+
+mapToInt   -> IntStream
+
+mapToDouble -> DoubleStream
+
+mapToLong -> LongStream
+
+
+
+### 数值范围
+
+```java
+    public void test_range_close() {
+        System.out.println(IntStream.rangeClosed(1, 100).reduce(0, Integer::sum));
+        System.out.println(IntStream.range(1, 100).reduce(0, Integer::sum));
+    }
+//5050
+//4950
+
+    @Test
+    public void test() {
+        Map<Boolean, List<Integer>> map = IntStream
+                .range(0, 100)
+                .boxed()
+                .collect(Collectors.toList())
+                .stream()
+                .collect(Collectors.partitioningBy(i -> i % 2 == 0));
+        for (Map.Entry<Boolean, List<Integer>> booleanListEntry : map.entrySet()) {
+            System.out.println(booleanListEntry.getKey());
+            booleanListEntry.getValue().forEach(System.out::println);
+        }
+    }
+
+```
+
+
+
+## 构建流
+
+### 由值构建
+
+Stream.of()
+
+
+
+### 由数组构建
+
+Attays.stream
+
+
+
+### 文件构建
+
+
+
+### 函数构建  -- 无限流
+
+迭代
+
+```java
+Stream.iterate(0, n -> n + 2)
+        .limit(10)
+        .forEach(System.out::println);
+```
+
+比如斐波那契数列
+
+```java
+Stream.iterate(new int[]{0, 1}, t -> new int[]{t[1], t[0] + t[1]})
+        .limit(10)
+        .forEach(t -> System.out.println(t[1]));
+```
+
+
+
+## 收集
+
+```java
+<R, A> R collect(Collector<? super T, A, R> collector);
+```
+
+这是Stream的收集器声明。
+Collectors提供了一些静态方法来收集。
+
+比如
+
+toList
+
+toSet
+
+groupingBy
+
+joining
+
+
+
+### 归约、汇总 
+
+reduce和collect
+
+
+
+### 分组
+
+groupingBy
+
+可以多级分组
+
+### 分区
+
+collect(partitioningBy())
+
+得到的是以boolean为key的map，可以保留filter的的两个结果
+
+可以分区后再分组
 
 
 
 
 
+### 收集器接口 -- 自定义
+
+```java
+public interface Collector<T, A, R>
+```
+
+T-流内元素的类型
+
+A-累加器类型
+
+R-收集对象的类型
+
+相当于模板方法，里面会定义几个方法，在是实现类中使用。
+
+```java
+/**
+ * A function that creates and returns a new mutable result container.
+ *
+ * @return a function which returns a new, mutable result container
+ */
+Supplier<A> supplier();
+
+/**
+ * A function that folds a value into a mutable result container.
+ *
+ * @return a function which folds a value into a mutable result container
+ */
+BiConsumer<A, T> accumulator();
+
+/**
+ * A function that accepts two partial results and merges them.  The
+ * combiner function may fold state from one argument into the other and
+ * return that, or may return a new result container.
+ *
+ * @return a function which combines two partial results into a combined
+ * result
+ */
+BinaryOperator<A> combiner();
+
+/**
+ * Perform the final transformation from the intermediate accumulation type
+ * {@code A} to the final result type {@code R}.
+ *
+ * <p>If the characteristic {@code IDENTITY_TRANSFORM} is
+ * set, this function may be presumed to be an identity transform with an
+ * unchecked cast from {@code A} to {@code R}.
+ *
+ * @return a function which transforms the intermediate result to the final
+ * result
+ */
+Function<A, R> finisher();
+```
+
+
+
+
+
+# Optional最佳实践
+
+Optional表达是一种概念，某个对象可能为空。这样就避免模型在概念上的检查
+
+optional可以看作最多包含一个元素的stream
+
+## 创建Optional对象
+
+空的optional
+
+工厂方法创建  Optional.empty();
+
+
+
+非空值创建
+
+Opational.of(val);
+
+
+
+可接受null的optional
+
+Optional.ofNullable(val);
+
+
+
+
+
+### 使用map从optional对象提取和转化值
+
+类似stream的flatmap
+
+```java
+
+public class OptionalDemoTest {
+
+
+    @Data
+    public static class Person{
+        private Optional<Car> car;
+
+    }
+
+    @Data
+    public static class Car{
+        private Optional<Insurance> insurance;
+    }
+
+    @Data
+    public static class Insurance{
+        private String name;
+    }
+
+    @Test
+    public void test() {
+        Person person = new Person();
+        Optional<Person> optionalPerson = Optional.of(person);
+        Optional<Optional<Car>> optionalOptionalCar = optionalPerson.map(Person::getCar);
+//        optionalOptionalCar.map(Car::getInsurance); // error
+        Optional<Car> optionalCar = optionalPerson.flatMap(Person::getCar);
+        Optional<Insurance> insurance = optionalCar.flatMap(Car::getInsurance);
+        String insuranceName = insurance.map(Insurance::getName).orElse("unKnow");
+    }
+}
+```
+
+
+
+
+
+### filter
 
 
 
