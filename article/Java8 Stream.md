@@ -1,5 +1,11 @@
 # lambda 
 
+# 作用
+
+Java里面一种传递行为或代码的手段，看起来简介，可以提高编码效率。
+
+
+
 ## 基本语法
 
 (parameters)->expression
