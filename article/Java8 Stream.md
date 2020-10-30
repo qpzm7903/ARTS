@@ -487,6 +487,18 @@ groupingBy
 
 可以多级分组
 
+分组用法
+
+一般分组后的到的是
+
+Map<key,List<T>>
+
+可以使用groupingBy(xxx,Collectors.maping())提供从T到R的映射
+
+
+
+
+
 ### 分区
 
 collect(partitioningBy())
