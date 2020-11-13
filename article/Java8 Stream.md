@@ -493,7 +493,7 @@ groupingBy
 
 Map<key,List<T>>
 
-可以使用groupingBy(xxx,Collectors.maping())提供从T到R的映射
+可以使用groupingBy(xxx,Collectors.maping(Collectors.toList()))提供从T到R的映射
 
 
 
