@@ -594,6 +594,52 @@ Optional.ofNullable(val);
 
 
 
+map
+
+```java
+    public<U> Optional<U> map(Function<? super T, ? extends U> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent())
+            return empty();
+        else {
+            return Optional.ofNullable(mapper.apply(value));
+        }
+    }
+```
+
+会校验是否为空，然后再执行map的操作。
+
+flatmap
+
+```java
+    public<U> Optional<U> flatMap(Function<? super T, Optional<U>> mapper) {
+        Objects.requireNonNull(mapper);
+        if (!isPresent())
+            return empty();
+        else {
+            return Objects.requireNonNull(mapper.apply(value));
+        }
+    }
+```
+
+也会先执行空校验，再使用mapper转为另一个Optional
+
+
+
+orElse
+
+为空的情况返回一个默认值
+
+orElseGet
+
+为空的时候接收一个supplier
+
+orElseThrow
+
+为空的时候接收一个supplier
+
+
+
 
 
 ### 使用map从optional对象提取和转化值
