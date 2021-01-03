@@ -9,6 +9,31 @@ aspectJ提供三种方式织入切面内容
 - 载入时织入
 
 ## 通过maven快速创建项目
+
+pom依赖
+
+```xml
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.8.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.8.9</version>
+        </dependency>
+```
+
+
+
+
+
 得到如下结构
 ```text
 └─src
@@ -243,8 +268,210 @@ app say hello
 after say
 ```
 
+## 通过maven插件编译，避免每次都写脚本
+
+pom依赖添加两个插件
+
+第一插件时为了方便运行结果。
+
+第二个插件是实际aspectJ织入的插件。
+
+```xml
+<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>org.example.App</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.11</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>       <!-- use this goal to weave all your main classes -->
+<!--                            <goal>test-compile</goal>  &lt;!&ndash; use this goal to weave all your test classes &ndash;&gt;-->
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <complianceLevel>1.8</complianceLevel>
+                </configuration>
+            </plugin>
+```
+
+在根目录执行
+
+```bash
+mvn clean package 
+java -jar target/aspectJDemo-1.0-SNAPSHOT.jar
+
+->>
+before say
+app say hello
+after say
+
+```
+
+
+
+所以使用这个插件是编译时织入，还是编译后织入呢？
+
+默认时编译时织入的，但是可以配置成编译后织入
+
+在[weaving a'lready  compiled classes](https://www.mojohaus.org/aspectj-maven-plugin/examples/weaveDirectories.html)说明了怎么配置
+
+
+
+## lombok 和 aspectJ一起使用---编译后织入
+
+引入lombok依赖，并且App.java文件修改为
+
+```java
+package org.example;
+
+import lombok.Data;
+
+/**
+ * Hello world!
+ */
+@Data
+public class App {
+    private String name;
+    public static void main(String[] args) {
+        App app = new App();
+        app.setName("aspectJ");
+        app.say();
+    }
+
+    public void say() {
+        System.out.println("app say hello " + name);
+    }
+}
+
+```
+
+
+
+aspectJ不管在编译时织入还是编译后织入，都会依赖于ajc编译器，而ajc不支持lombok。所以想在用lombok的时候可以采用编译后织入的方式，也就是先用javac编译，在用ajc编译织入。aspectJ插件配置如下
+
+```xml
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>aspectj-maven-plugin</artifactId>
+    <version>1.11</version>
+    <executions>
+        <execution>
+            <phase>process-classes</phase>
+            <goals>
+                <goal>compile</goal>       <!-- use this goal to weave all your main classes -->
+            </goals>
+        </execution>
+    </executions>
+    <configuration>
+        <forceAjcCompile>true</forceAjcCompile>
+        <sources/>
+        <weaveDirectories>
+            <weaveDirectory>${project.build.outputDirectory}</weaveDirectory>
+        </weaveDirectories>
+        <source>1.8</source>
+        <target>1.8</target>
+        <complianceLevel>1.8</complianceLevel>
+    </configuration>
+</plugin>
+```
+
+接着
+
+```bash
+ mvn clean package; java -jar target/aspectJDemo-1.0-SNAPSHOT.jar
+ ->
+...编译信息忽略
+before say
+app say hello aspectJ
+after say
+
+```
+
+
+
+
+
+## lombok 和 aspectJ一起使用--载入时织入
+
+资源文件里面配置`aop.xml`
+
+`pom.xml`中去除aspectJ的插件，接着运行
+
+```bash
+#!/usr/bin/env bash
+
+ASPECTJ_TOOLS=D:/software/maven/repository/org/aspectj/aspectjtools/1.8.13/aspectjtools-1.8.13.jar
+ASPECTJ_RT=D:/software/maven/repository/org/aspectj/aspectjrt/1.8.13/aspectjrt-1.8.13.jar
+ASPECTJ_WEAVER=D:/software/maven/repository/org/aspectj/aspectjweaver/1.8.13/aspectjweaver-1.8.13.jar
+echo "compiling by maven clean compile"
+mvn clean compile
+echo "running"
+java -javaagent:$ASPECTJ_WEAVER -cp "$ASPECTJ_RT;target/classes" org.example.App
+```
+
+输出
+
+```
+...忽略编译信息
+before say
+app say hello aspectJ
+after say
+```
+
+
+
+如果用了maven的shade插件制定main class，也可以直接
+
+```bash
+#!/usr/bin/env bash
+
+ASPECTJ_TOOLS=D:/software/maven/repository/org/aspectj/aspectjtools/1.8.13/aspectjtools-1.8.13.jar
+ASPECTJ_RT=D:/software/maven/repository/org/aspectj/aspectjrt/1.8.13/aspectjrt-1.8.13.jar
+ASPECTJ_WEAVER=D:/software/maven/repository/org/aspectj/aspectjweaver/1.8.13/aspectjweaver-1.8.13.jar
+mvn clean package
+java -javaagent:$ASPECTJ_WEAVER -jar target/aspectJDemo-1.0-SNAPSHOT.jar
+```
+
+输出
+
+```bash
+...忽略编译信息
+before say
+app say hello aspectJ
+after say
+```
+
+
+
+载入时织入的方式查看字节码文件，里面是没有织入的痕迹的。
+
 ## 参考
 
-[插件]{https://www.mojohaus.org/aspectj-maven-plugin/examples/weaveDirectories.html}
-[aspectJ]{https://www.eclipse.org/aspectj/doc/released/progguide/index.html}
-[blog]{https://blog.mythsman.com/post/5d301cf2976abc05b34546be/}
+[aspectJ maven 插件](https://www.mojohaus.org/aspectj-maven-plugin/examples/weaveDirectories.html)
+[aspectJ](https://www.eclipse.org/aspectj/doc/released/progguide/index.html)
+[blog](https://blog.mythsman.com/post/5d301cf2976abc05b34546be/)
+
+[javac+lombok后使用aspectJ二进制织入](https://stackoom.com/question/3r9If/%E5%9C%A8Javac-Lombok%E9%98%B6%E6%AE%B5%E4%B9%8B%E5%90%8E%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8AspectJ-Maven%E8%BF%9B%E8%A1%8C%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%BC%96%E7%BB%87)
