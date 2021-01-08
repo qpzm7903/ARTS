@@ -470,10 +470,51 @@ after say
 
 载入时织入的方式查看字节码文件，里面是没有织入的痕迹的。
 
+
+
+### aspectJ概念
+
+[join point](https://www.eclipse.org/aspectj/doc/released/progguide/semantics-joinPoints.html)：连接点，java代码中已定义好的点，包含构造器调用，字段访问，方法调用等
+
+[pointcut](https://www.eclipse.org/aspectj/doc/released/progguide/semantics-pointcuts.html):切点，可以选择某些切入点，并且暴露该切入点所在的上下文的一些值。
+
+advice:A piece of advice is code。在在切点的切入点执行，可以访问切点暴露出来的值，可以由before，after、aroud来声明。
+
+
+
+### 基于Java注解的AspectJ
+
+1、注解
+
+2、类型
+
+3、签名
+
+4、运行时类型匹配和上下文
+
+5、包和参数注解
+
+6、注解继承和切点匹配
+
+### spring aop 和 aspectJ
+
+### spring aop独有的语法
+
+
+
 ## 参考
 
 [aspectJ maven 插件](https://www.mojohaus.org/aspectj-maven-plugin/examples/weaveDirectories.html)
+
 [aspectJ](https://www.eclipse.org/aspectj/doc/released/progguide/index.html)
 [blog](https://blog.mythsman.com/post/5d301cf2976abc05b34546be/)
 
 [javac+lombok后使用aspectJ二进制织入](https://stackoom.com/question/3r9If/%E5%9C%A8Javac-Lombok%E9%98%B6%E6%AE%B5%E4%B9%8B%E5%90%8E%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8AspectJ-Maven%E8%BF%9B%E8%A1%8C%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%BC%96%E7%BB%87)
+
+[基于java注解的aspectJ](https://www.eclipse.org/aspectj/doc/released/adk15notebook/annotations-aspectmembers.html)
+
+[AspectJ in Android （二），AspectJ 语法](https://www.jianshu.com/p/691acc98c0b8)
+
+
+
+[aspectJ官网](https://www.eclipse.org/aspectj/docs.php)

@@ -1,4 +1,28 @@
-# Java注解处理器
+# Java注解
+
+### Java注解的概念
+
+声明Java注解的时候有三种保留策略：
+
+1. source file retention
+   1. .class文件中看不到
+   2. 
+2. class-file retention
+   1. 默认的级别，.class文件中能看到
+3. runtime retention
+   1. 运行时能看到
+
+这三种界别，后者包含前者。
+
+
+
+注解的继承
+
+默认注解是不继承的。
+
+注解上使用@Inherited注解可以继承，但是接口上的不继承。
+
+## Java注解处理器
 
 阅读文章[注解处理器](http://hannesdorfmann.com/annotation-processing/annotationprocessing101)
 
