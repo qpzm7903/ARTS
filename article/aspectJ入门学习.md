@@ -342,6 +342,52 @@ after say
 
 
 
+### 编译时织入
+
+这时候在IDEA中直接运行即可，因为java compilier自动修改为ajc。起到编译时织入的效果。
+
+pom文件的build配置如下
+
+```xml
+<build>
+        <plugins>
+            <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.10</version>
+                <configuration>
+                    <complianceLevel>1.8</complianceLevel>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+```
+
+
+
+
+
 ## lombok 和 aspectJ一起使用---编译后织入
 
 引入lombok依赖，并且App.java文件修改为
@@ -472,7 +518,7 @@ after say
 
 
 
-### aspectJ概念
+# aspectJ
 
 [join point](https://www.eclipse.org/aspectj/doc/released/progguide/semantics-joinPoints.html)：连接点，java代码中已定义好的点，包含构造器调用，字段访问，方法调用等
 
@@ -482,7 +528,260 @@ advice:A piece of advice is code。在在切点的切入点执行，可以访问
 
 
 
-### 基于Java注解的AspectJ
+## 语法
+
+### pointCut
+
+### 1、call
+
+expression:call (method signatur) 
+
+表达式之间可以通过逻辑符号连接
+
+expression可以构成一个pointCut
+
+在java中，通过注解的方式，比如
+
+```java
+@Pointcut("call(void org.example.App.say())")
+public void callJoinPoint() {
+
+}
+```
+
+
+
+通配符
+
+1、App中，返回值为void，方法开头为hava，入参为空
+
+```java
+    @Pointcut("call(void org.example.App.have*())")
+    public void testWildCards1() {
+      
+    }
+```
+
+
+
+2、返回值任意，方法任意，参数任意
+
+```java
+@Pointcut("call(* org.example.App.* (..))")
+public void testWildCards2() {
+}
+```
+
+### 2、execution
+
+### 3、call vs. execution
+
+从字面意义上看：
+
+call是调用，调用是外部的
+
+execution是执行，执行是内部的
+
+那么实际的织入代码有什么区别呢？
+
+以下面两个简单的类看看
+
+```java
+package org.example.difference;
+
+public class Car {
+    public static void main(String[] args) {
+        Car car = new Car();
+        car.driving();
+    }
+    public void driving() {
+        System.out.println("the car is driving");
+    }
+}
+package org.example.difference;
+
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+
+@Aspect
+public class CarAop {
+    @Before("call(void Car.driving())")
+    public void callAdvice() {
+        System.out.println("before call car.driving()");
+    }
+
+    @Before("execution(void Car.driving())")
+    public void executionAdvice() {
+        System.out.println("before execution car.driving()");
+    }
+}
+
+Car的字节码如下
+public class Car {
+    public Car() {
+    }
+
+    public static void main(String[] args) {
+        Car car = new Car();
+        CarAop.aspectOf().callAdvice();
+        car.driving();
+    }
+
+    public void driving() {
+        CarAop.aspectOf().executionAdvice();
+        System.out.println("the car is driving");
+    }
+}
+```
+
+可以显然看到：
+
+call是在方法调用的地方织入的
+
+execution是在方法内部织入的
+
+
+
+### 暴露加入点的上下文
+
+比如暴露参数
+
+```java
+    @Before("call(* org.example.App.add (int ,int  )) && args(a,b)")
+    public void testArgs(int a,int b) {
+        System.out.println(String.format("before App.add(%s,%s", a, b));
+    }
+```
+
+暴露函数的调用对象
+
+```java
+    @Before("call(* org.example.App.add (..)) && target(app)")
+    public void testTarget(App app) {
+        System.out.println(String.format("before App:" + app));
+    }
+```
+
+
+
+非绑定参数情况下，也可以直接获取JoinPoint，从里面获取入参。
+
+```java
+    @Before("call(* org.example.App.add (..))")
+    public void testJoinPoint(JoinPoint joinPoint) {
+        System.out.println(String.format("before App,joinPoint.getTarget()->" + joinPoint.getTarget()));
+        System.out.println(String.format("before App,joinPoint.getArgs() ->" + joinPoint.getArgs()));
+        System.out.println(String.format("before App,joinPoint.getSignature() ->" + joinPoint.getSignature()));
+        System.out.println(String.format("before App,joinPoint.getKind() ->" + joinPoint.getKind()));
+        System.out.println(String.format("before App,joinPoint.getThis() ->" + joinPoint.getThis()));
+        System.out.println(String.format("before App,joinPoint.getSourceLocation() ->" + joinPoint.getSourceLocation()));
+        System.out.println(String.format("before App,joinPoint.getStaticPart() ->" + joinPoint.getStaticPart()));
+    }
+```
+
+
+
+### 其他切入点
+
+1. 捕获异常处理上的连接点，异常时Throwable以及其子类，只能用before设置advice，
+
+   语法:`pointcut [切入点名字](参数列表): handler(异常类);`
+
+
+
+
+```java
+public class AC {
+    public static void main(String[] args) {
+        AC ac = new AC();
+        ac.open();
+    }
+
+    @ExAnno
+    public void open() {
+        try {
+            throw new IllegalArgumentException("open ac fail");
+        } catch (IllegalArgumentException e) {
+            System.out.println("AC arise exception" + e.getMessage());
+        }
+
+    }
+}
+@AspectJ
+...
+    @Before("handler(IllegalArgumentException)")
+    public void exception3() {
+        System.out.println("handler(IllegalArgumentException)");
+    }
+
+字节码
+public class AC {
+    public AC() {
+    }
+
+    public static void main(String[] args) {
+        AC ac = new AC();
+        ac.open();
+    }
+
+    @ExAnno
+    public void open() {
+        try {
+            throw new IllegalArgumentException("open ac fail");
+        } catch (IllegalArgumentException var3) {
+            ACAp.aspectOf().exception3();
+            System.out.println("AC arise exception" + var3.getMessage());
+        }
+    }
+}
+```
+
+
+
+1. 当执行的执行的代码属于某个类
+
+2. 
+
+### advice
+
+> pointcuts pick out join points. But they don't *do* anything apart from picking out join points.
+>
+> Advice brings together a pointcut (to pick out join points) and a body of code (to run at each of those join points).
+
+有几种advice
+
+1. before
+
+   > before advice on a method call join point runs before the actual method starts running, just after the arguments to the method call are evaluated.
+
+2. after
+
+   > *After advice* on a particular join point runs after the program proceeds with that join point,
+   >
+   > runs after returning *or* throwing, like Java's `finally`
+
+3. after returning
+
+4. after throwing
+
+
+
+
+### 通配符
+
+- 常用通配符
+
+| 通配符 | 意义                                  | 示例                                                         |
+| ------ | ------------------------------------- | ------------------------------------------------------------ |
+| *      | 表示除”.”以外的任意字符串             | java.*.Date：可以表示java.sql. Date,java.util. Date          |
+| ..     | 表示任意子package或者任意参数参数列表 | java..*:表示java任意子包；void getName(..):表示方法参数为任意类型任意个数 |
+| +      | 表示子类                              | java..*Model+:表示java任意包中以Model结尾的子类              |
+
+
+
+
+
+## 基于Java注解的AspectJ
 
 1、注解
 
@@ -496,9 +795,13 @@ advice:A piece of advice is code。在在切点的切入点执行，可以访问
 
 6、注解继承和切点匹配
 
-### spring aop 和 aspectJ
+## spring aop 和 aspectJ 
 
-### spring aop独有的语法
+1、![image-20210110202550467](image-20210110202550467.png)
+
+call poincut designator isn't supported by spring
+
+## spring aop独有的语法
 
 
 
@@ -514,7 +817,5 @@ advice:A piece of advice is code。在在切点的切入点执行，可以访问
 [基于java注解的aspectJ](https://www.eclipse.org/aspectj/doc/released/adk15notebook/annotations-aspectmembers.html)
 
 [AspectJ in Android （二），AspectJ 语法](https://www.jianshu.com/p/691acc98c0b8)
-
-
 
 [aspectJ官网](https://www.eclipse.org/aspectj/docs.php)
