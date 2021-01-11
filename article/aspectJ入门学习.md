@@ -819,3 +819,5 @@ call poincut designator isn't supported by spring
 [AspectJ in Android （二），AspectJ 语法](https://www.jianshu.com/p/691acc98c0b8)
 
 [aspectJ官网](https://www.eclipse.org/aspectj/docs.php)
+
+[aspectJ quick reference](https://www.eclipse.org/aspectj/doc/released/progguide/quick.html)
