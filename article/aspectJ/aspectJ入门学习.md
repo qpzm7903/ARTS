@@ -830,21 +830,7 @@ ModifiersPattern =
 
 
 
-## 基于Java注解的AspectJ
-
-1、注解
-
-2、类型
-
-3、签名
-
-4、运行时类型匹配和上下文
-
-5、包和参数注解
-
-6、注解继承和切点匹配
-
-## spring aop 和 aspectJ 
+# spring aop 和 aspectJ 
 
 
 
@@ -886,6 +872,8 @@ Spring不能像之前那样使用<bean>声明来创建一个bean实例——它�
 
 打断点的时候查看对象，发现时个CGLB的代理对象。所以只是用了aspectJ的语法，实现理念，自己实现了动态代理。
 
+所以如果想要用到更多的aspectJ的能力，还是得用aspectJ的编译期、编译后织入的方式。
+
 1、通过javaconfig
 
 
@@ -894,9 +882,9 @@ Spring不能像之前那样使用<bean>声明来创建一个bean实例——它�
 
 ## spring aop独有的语法
 
+类似于aspectJ中的within，spring提供了一个bean的操作符
 
-
-## 参考
+# 参考
 
 [aspectJ maven 插件](https://www.mojohaus.org/aspectj-maven-plugin/examples/weaveDirectories.html)
 
