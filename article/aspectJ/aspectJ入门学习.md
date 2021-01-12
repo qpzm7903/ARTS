@@ -880,6 +880,193 @@ Spring不能像之前那样使用<bean>声明来创建一个bean实例——它�
 
 2、通过xml来装配
 
+## 实践
+
+创建spring工程
+
+### 1、pom依赖
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.4.1</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.example</groupId>
+    <artifactId>demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>aopDemo</name>
+    <description>Demo project for Spring Boot</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.8.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.8.9</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+```
+
+
+
+### 2、启动类
+
+```java
+package com.example.demo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationContextFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+@SpringBootApplication
+public class AopDemoApplication implements CommandLineRunner {
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    public static void main(String[] args) {
+        SpringApplication.run(AopDemoApplication.class, args);
+
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        TestBean testBean = (TestBean)applicationContext.getBean("testBean");
+        testBean.hello();
+    }
+}
+
+```
+
+
+
+
+
+### 3、测试类和切面类
+
+3.1 测试类
+
+```java
+package com.example.demo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TestBean {
+    @Autowired
+    private TestBean2 testBean2;
+
+    public void hello() {
+        System.out.println("hello");
+        testBean2.hi();
+    }
+}
+
+
+package com.example.demo;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class TestBean2 {
+    public void hi() {
+        System.out.println("hi");
+    }
+}
+
+```
+
+
+
+3.2 切面类
+
+```java
+package com.example.demo;
+
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
+
+@Aspect
+@Component
+public class TestBeanAspect {
+    @Before("execution(void com.example.demo.TestBean.hello())")
+    public void before() {
+        System.out.println("before");
+    }
+
+    @After("execution(void com.example.demo.TestBean.hello())")
+    public void after() {
+        System.out.println("after");
+    }
+}
+```
+
+
+
+### 3.3 启动
+
+结果输出
+
+```
+... 省略spring启动输出
+2021-01-12 13:22:28.256  INFO 4052 --- [           main] com.example.demo.AopDemoApplication      : Started AopDemoApplication in 1.832 seconds (JVM running for 2.692)
+before
+hello
+hi
+after
+```
+
+
+
 ## spring aop独有的语法
 
 类似于aspectJ中的within，spring提供了一个bean的操作符
