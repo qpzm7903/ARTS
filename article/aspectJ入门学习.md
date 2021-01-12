@@ -740,7 +740,29 @@ public class AC {
 
 1. 当执行的执行的代码属于某个类
 
-2. 
+   `within(Class)`
+
+2. cflow
+
+   `cflow(pointCut)`
+
+   捕获在该pointCut下的所有加入点
+
+   示例：
+
+   cflow会包含切入点本身，所以要通过 within(切面的类) 排除掉，不然会栈溢出
+
+   因为切面织入后，也属于控制流的一部分，避免切面再次切自己家，所以要加限制。
+
+   cflow(pointCut) && !within(aop类)
+
+   
+
+3. cfowblow
+
+   `cflowbelow`不包括初始连接点，cflow包含
+
+   
 
 ### advice
 
@@ -779,6 +801,33 @@ public class AC {
 
 
 
+### [语法总结](https://www.eclipse.org/aspectj/doc/released/progguide/semantics-pointcuts.html#matching)
+
+```
+MethodPattern = 
+  [ModifiersPattern] TypePattern 
+        [TypePattern . ] IdPattern (TypePattern | ".." , ... ) 
+        [ throws ThrowsPattern ]
+ConstructorPattern = 
+  [ModifiersPattern ] 
+        [TypePattern . ] new (TypePattern | ".." , ...) 
+        [ throws ThrowsPattern ]
+FieldPattern = 
+  [ModifiersPattern] TypePattern [TypePattern . ] IdPattern
+ThrowsPattern = 
+  [ ! ] TypePattern , ...
+TypePattern = 
+    IdPattern [ + ] [ [] ... ]
+    | ! TypePattern
+    | TypePattern && TypePattern
+    | TypePattern || TypePattern
+    | ( TypePattern )  
+IdPattern =
+  Sequence of characters, possibly with special * and .. wildcards
+ModifiersPattern =
+  [ ! ] JavaModifier  ...
+```
+
 
 
 ## 基于Java注解的AspectJ
@@ -797,9 +846,51 @@ public class AC {
 
 ## spring aop 和 aspectJ 
 
-1、![image-20210110202550467](image-20210110202550467.png)
 
-call poincut designator isn't supported by spring
+
+>  Spring AOP旨在通过Spring IoC提供一个简单的AOP实现，以解决编码人员面临的最常出现的问题。这并不是完整的AOP解决方案，它只能用于Spring容器管理的beans。
+
+连接点支持
+
+| join point                  | Spring Aop support | AspectJ suppert |
+| --------------------------- | ------------------ | --------------- |
+| Method call                 | no                 | yes             |
+| method execution            | yes                | yes             |
+| constructor call            | no                 | yes             |
+| constructor execution       | no                 | yes             |
+| static initialzer execution | no                 | yes             |
+| Object initialization       | no                 | yes             |
+| Field reference             | no                 | yes             |
+| Field assignment            | no                 | yes             |
+| Handler execution           | no                 | yes             |
+| advice execution            | no                 | yes             |
+
+
+
+Spring提供了4种类型的AOP支持：
+基于代理的经典Spring AOP；
+纯POJO切面；
+@AspectJ注解驱动的切面；
+注入式AspectJ切面（适用于Spring各版本）
+
+
+
+前三种都是Spring AOP实现的变体，Spring AOP构建在动态代理基础之上，因此，Spring对
+AOP的支持局限于方法拦截。
+
+
+
+Spring不能像之前那样使用<bean>声明来创建一个bean实例——它已经在运行时由AspectJ创建完成了。Spring需要通过aspectOf()工厂方法获得切面的引用，然后像<bean>元素规定的那样在该对象上执行依赖注入
+
+
+
+打断点的时候查看对象，发现时个CGLB的代理对象。所以只是用了aspectJ的语法，实现理念，自己实现了动态代理。
+
+1、通过javaconfig
+
+
+
+2、通过xml来装配
 
 ## spring aop独有的语法
 
@@ -821,3 +912,5 @@ call poincut designator isn't supported by spring
 [aspectJ官网](https://www.eclipse.org/aspectj/docs.php)
 
 [aspectJ quick reference](https://www.eclipse.org/aspectj/doc/released/progguide/quick.html)
+
+[spring使用AspectJ实现注解式AOP面向切面编程](https://blog.csdn.net/pan_junbiao/article/details/104614416)
