@@ -244,15 +244,26 @@ spring.profiles.default
 
 
 
+在默认的配置文件中
+
+```properties
+spring.profiles.active=dev
+```
+
+
+
 
 
 
 
 ### 使用profile进行测试
 
-比如测试的一套环境，通过配置隔离开
+比如测试的一套环境，通过配置隔离开，测试的时候激活,如下
 
-
+```java
+@SpringBootTest
+@ActiveProfiles("dev")
+```
 
 ## 条件化的bean
 
