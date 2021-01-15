@@ -349,3 +349,51 @@ public @interface Wyc {
 
 2、spring表达式语言 SpEL
 
+
+
+
+
+### 1、属性占位符
+
+
+
+1、定义属性，以及引入
+
+默认的可以之际在application.properties中配置
+
+也可以自定义配置，然后通过`@PropertySource("classpath:file")`引入
+
+注意：
+
+- @PropertySource通常用于属性加载配置文件，注意@PropertySource注解不支持加载yaml文件，支持properties文件。
+- @ImportResource通常用于加载Spring的xml配置文件
+
+@PropertySource的位置，打在要用的类上
+
+**疑问：为什么不是在启动类上，如果是在要用的类上，那么如果有很多类，就需要打很多了。**
+
+参考 https://www.cnblogs.com/eternityz/p/12511777.html
+
+@ConfigurationProperties方式可以进行配置文件与实体字段的自动映射，但需要字段必须提供set方法才可以，而使用@Value注解修饰的字段不需要提供set方法
+
+| 比较项                      | @ConfigurationProperties | @Value |
+| --------------------------- | ------------------------ | ------ |
+| 全量注入                    | 支持                     | 否     |
+| 松散绑定（Relaxed binding） | 支持                     | 否     |
+| SpEL                        | 否                       | 支持   |
+| JSR303                      | 支持                     | 不支持 |
+
+2、使用
+
+在配置类中，注入 `Enviroment`然后，使用`getProperty`方法使用。
+
+
+
+在Coponent中，直接`@Value("${xxx}")`这样使用
+
+
+
+在xml的bean中，也是  `"${xxx}"`
+
+
+
