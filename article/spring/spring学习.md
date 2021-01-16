@@ -397,3 +397,35 @@ public @interface Wyc {
 
 
 
+3、文件类型
+
+propertySource默认支持properties文件
+
+yml文件需要自己读取，并加入到上下文中。
+
+也许可以自己写一个注解来处理
+
+
+
+
+
+
+
+# Web中的spring
+
+SpringMVC
+
+![image-20210115215424099](image-20210115215424099.png)
+
+
+
+使用thymeleaf作为视图处理器
+
+
+
+### thymeleaf
+
+[官网](https://www.thymeleaf.org/)
+
+
+
