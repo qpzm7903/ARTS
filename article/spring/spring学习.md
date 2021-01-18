@@ -252,6 +252,10 @@ spring.profiles.active=dev
 
 
 
+### FAQ
+
+配置怎么用profiles来配置？除了xml之外的。比如用Properties
+
 
 
 
@@ -413,7 +417,7 @@ yml文件需要自己读取，并加入到上下文中。
 
 # Web中的spring
 
-SpringMVC
+## SpringMVC
 
 ![image-20210115215424099](image-20210115215424099.png)
 
@@ -423,9 +427,502 @@ SpringMVC
 
 
 
+使用这种模型，controller返回的是视图的名称。
+
+
+
+重定向也可以在controller指定，比如
+
+```java
+
+return "redirect:/orders/current";
+```
+
+
+
+### postMapping
+
+表单内容直接和模型映射。
+
+
+
+字段映射
+
+list映射
+
+看post请求，内容是通过Form data传入的。不是body中的json
+
+
+
+表单输入验证
+
+直接在VO上加一些校验的注解
+
+`javax.validation.constraints`
+
+`org.hibernate.validator.constraints`
+
+这两个包里都有一些校验的注解。
+
+
+
+### controller
+
+
+
+### view
+
+
+
+### view-controller
+
+假设某些view不需要逻辑，直接返回，就可以使用视图控制器
+
+
+
+### model
+
+model属性
+
+### session
+
+​	
+
+
+
+### FAQ
+
+MVC模式下，错误信息怎么返回？
+
+比如复选框选错了
+
+
+
 ### thymeleaf
 
 [官网](https://www.thymeleaf.org/)
 
 
 
+### 命名空间
+
+`th:text="${attribute}"`
+
+会替代所在的标签内容
+
+
+
+`th:each="item : ${items}"`
+
+
+
+`th:value="${obejct.attr}"`
+
+替换value属性
+
+
+
+### 模板缓存
+
+| 模板             | 配置                         |
+| ---------------- | ---------------------------- |
+| Freemarker       | spring.freemarker.cache      |
+| Groovy Templates | spring.groovy.template.cache |
+| Mustache         | spring.mustache.cahce        |
+| Thymeleaff       | spring.thymeleaf.cahce       |
+
+
+
+## 处理数据
+
+- spring jdbcTemplate
+- springJdbcinsert
+- spring data 中的jpa
+
+
+
+### spring jdbc tempalte
+
+使用这个的原因是jdbc太底层，jdbcTemplate做了一层抽象。
+
+
+
+### 依赖
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jdbc</artifactId>
+</dependency>
+```
+
+使用内存数据库做测试
+
+```xml
+<dependency>
+    <groupId>com.h2database</groupId>
+    <artifactId>h2</artifactId>
+    <scope>runtime</scope>
+</dependency>
+```
+
+
+
+
+
+### 使用
+
+1、定义repo接口
+
+2、使用jdbcTemplate去实现
+
+
+
+
+
+### sql
+
+DDL、DML、以及初始化sql的执行
+
+1、DDL
+
+schema.sql 在 reousce目录下，会被spring boot执行
+
+
+
+2、初始化数据
+
+data.sql 会自动执行
+
+
+
+### h2配置
+
+application.properties
+
+```properties
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.h2.console.enabled=true
+```
+
+启动后日志会输出
+
+`H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:testdb'`
+
+打开`http://localhost:8080/h2-console`
+
+接着把`jdbc:h2:mem:testdb`复制进去到jdbcurl上，点击连接即可。
+
+
+
+
+
+### spring data
+
+*Spring Data JPA* - 针对关系数据库的持久化
+
+*Spring Data Mongo* - 针对 Mongo 文档数据库的持久化
+
+*Spring Data Neo4j* - 针对 Neo4j 图形数据库的持久化
+
+*Spring Data Redis* - 针对 Redis 键值存储的持久化
+
+*Spring Data Cassandra* - 针对 Cassandra 数据库的持久化
+
+
+
+### 用spring data jpa
+
+依赖
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+```
+
+
+
+#### 注解
+
+使用Entity标记一个类作为jpa管理的实体
+
+@id属性标记id
+
+
+
+#### repo 接口
+
+```java
+public interface IngredientRepo extends CrudRepository<Ingredient, String> {
+
+}
+```
+
+CrudRepository 为 CRUD（创建、读取、更新、删除）操作声明了十几个方法。第一个是要持久化的类型，第二个是Id的类型
+
+
+
+定义接口，不需要写实现，spirng data jpa会自动实现这些基本的实现。
+
+
+
+spring data jpa 定义了一种小型的DSL，持久化的细节再repository的方法签名上。
+
+>  repository 的方法由一个动词、一个可选的主语、单词 *by* 和一个谓词组成。在 findByDeliveryZip() 中，动词是 *find*，谓词是 *DeliveryZip*，主语没有指定
+
+
+
+当条件比较复杂的时候，签名会很长，这时候可以通过@Query注解来处理
+
+
+
+# spring 安全
+
+自动配置 Spring Security
+
+自定义用户存储
+
+自定义登录页面
+
+防御 CSRF 攻击
+
+了解你的用户
+
+
+
+## spring security
+
+依赖
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+```
+
+
+
+添加这个依赖之后，就简单的被保护了。访问需要账号密码
+
+所有的 HTTP 请求路径都需要认证。
+
+不需要特定的角色或权限。
+
+没有登录页面。
+
+身份验证由 HTTP 基本身份验证提供。
+
+只有一个用户；用户名是 *user*。
+
+
+
+但是最基本的特性还不足以满足需求
+
+
+
+比如
+
+提示使用登录页面进行身份验证，而不是使用 HTTP 基本对话框。
+
+为多个用户提供注册页面，让新的 Taco Cloud 用户可以注册。
+
+为不同的请求路径应用不同的安全规则。例如，主页和注册页面根本不需要身份验证。
+
+
+
+## 配置spring security
+
+
+
+### 通过java配置
+
+配置类，就可以得到一个简单的登陆界面
+
+
+
+### 配置用户
+
+可以基于
+
+一个内存用户存储
+
+基于 JDBC 的用户存储
+
+由 LDAP 支持的用户存储
+
+定制用户详细信息服务
+
+
+
+都要实现
+
+```java
+@Override
+protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    ...
+}
+```
+
+
+
+
+
+### 内置用户-基于内存
+
+比如
+
+```java
+@Override
+protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    auth
+        .inMemoryAuthentication()
+            .withUser("buzz")
+                .password("infinity")
+                .authorities("ROLE_USER")
+            .and()
+            .withUser("woody")
+                .password("bullseye")
+                .authorities("ROLE_USER");
+}
+```
+
+
+
+### 基于jdbc
+
+表呢？
+
+### 基于LADP
+
+是什么东西
+
+### 自定义
+
+
+
+
+
+## 保护web请求
+
+拦截想拦截的界面，放行应该放行的界面
+
+能做到
+
+在允许服务请求之前，需要满足特定的安全条件
+
+配置自定义登录页面
+
+使用户能够退出应用程序
+
+配置跨站请求伪造保护
+
+实现
+
+```java
+WebSecurityConfigurerAdapter.configure
+```
+
+比如
+
+```java
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+        .authorizeRequests()
+            .antMatchers("/design", "/orders")
+                .hasRole("ROLE_USER")
+            .antMatchers(“/”, "/**").permitAll();
+}
+```
+
+对于design,order界面，是允许ROLE_USER访问的，其他用户不允许。
+
+然后其他的请求都允许。
+
+注意顺序是由影响的。
+
+如果先允许所有，再给ROLE_USER授权就无效了。
+
+
+
+常用的配置方法
+
+| 方法                       | 做了什么                               |
+| -------------------------- | -------------------------------------- |
+| access(string)             | SpEL的表达式为True即可访问             |
+| anonymous()                | default user can access                |
+| authenticated()            | 认证用户可以访问                       |
+| denyAll()                  |                                        |
+| fullyAuthenticated()       | 完全授权...                            |
+| hasAnyAuthority(String...) | 拥有任意给定的权限，可以访问           |
+| hasAnyRole(String...)      | 拥有任意给定的角色，可以访问           |
+| hasAuthority(String)       | 如果用户有给定的权限，则允许访问       |
+| hasIpAddress(String)       | 来自给定 IP 地址的请求允许访问         |
+| hasRole(String)            | 如果用户有给定的角色，则允许访问       |
+| not()                      | 拒绝任何其他访问方法                   |
+| permitAll()                | 无条件允许访问                         |
+| rememberMe()               | 允许认证了的同时标记了记住我的用户访问 |
+
+
+
+对于SpEL的扩展
+
+| Security 表达式           | 意指什么                                                    |
+| ------------------------- | ----------------------------------------------------------- |
+| authentication            | 用户认证对象                                                |
+| denyAll                   | 通常值为 false                                              |
+| hasAnyRole(list of roles) | 如果用户有任何给定的角色，则为 true                         |
+| hasRole(role)             | 如果用户有给定的角色，则为 true                             |
+| hasIpAddress(IP Address)  | 如果请求来自给定 IP 地址，则为 true                         |
+| isAnonymous()             | 如果用户是默认用户，则为 true                               |
+| isAuthenticated()         | 如果用户是认证了的，则为 true                               |
+| isFullyAuthenticated()    | 如果用户被完全认证了的（不是使用记住我进行认证），则为 true |
+| isRememberMe()            | 如果用户被标记为记住我后认证了，则为 true                   |
+| permitAll()               | 通常值为 true                                               |
+| principal                 | 用户 pricipal 对象                                          |
+
+
+
+### 配置登陆界面
+
+登陆界面可配置，就是配置一个简单的视图，请求发到regsiter上，还可以配置登陆后的跳转
+
+
+
+
+
+### 登出
+
+登出也要做跳转
+
+以及登出的按钮
+
+
+
+### 阻止跨站请求伪造攻击
+
+spring seurity 可以做，thymleafh默认就做了
+
+
+
+### 领域与用户关联
+
+通过jpa的关系注解很容易做到。
+
+那么再controller中如何获取用户？
+
+
+
+常用的方法由：
+
+- 将主体对象注入控制器方法
+- 将身份验证对象注入控制器方法
+- 使用 SecurityContext 获取安全上下文
+- 使用 @AuthenticationPrincipal 注解的方法
+
+
+
+# 使用配置属性
