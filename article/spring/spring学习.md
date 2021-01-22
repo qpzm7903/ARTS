@@ -733,6 +733,14 @@ spring data jpa 定义了一种小型的DSL，持久化的细节再repository的
 
 
 
+## spring security log
+
+```properties
+logging.level.org.springframework.security=DEBUG
+```
+
+
+
 ## 配置spring security
 
 
@@ -793,13 +801,25 @@ protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
 ### 基于jdbc
 
-表呢？
+表呢？jdbc模式默认一些表的存在，但是也可以自定义用户查询。
+
+密码可以进行一些加密
+
+- BCryptPasswordEncoder —— 采用 bcrypt 强哈希加密
+- NoOpPasswordEncoder —— 不应用任何编码
+- Pbkdf2PasswordEncoder —— 应用 PBKDF2 加密
+- SCryptPasswordEncoder —— 应用了 scrypt 散列加密
+- StandardPasswordEncoder —— 应用 SHA-256 散列加密
+
+
 
 ### 基于LADP
 
 是什么东西
 
-### 自定义
+### 自定义--by jpa
+
+
 
 
 
@@ -844,6 +864,8 @@ protected void configure(HttpSecurity http) throws Exception {
 
 注意顺序是由影响的。
 
+注意，角色名也有坑，spring security 会自动加ROLE前缀
+
 如果先允许所有，再给ROLE_USER授权就无效了。
 
 
@@ -886,6 +908,10 @@ protected void configure(HttpSecurity http) throws Exception {
 
 
 
+FAQ
+
+spring security 怎么做授权、鉴权的
+
 ### 配置登陆界面
 
 登陆界面可配置，就是配置一个简单的视图，请求发到regsiter上，还可以配置登陆后的跳转
@@ -898,7 +924,23 @@ protected void configure(HttpSecurity http) throws Exception {
 
 登出也要做跳转
 
+配置比如
+
+```java
+.and()
+    .logout()
+        .logoutSuccessUrl("/")
+```
+
+
+
 以及登出的按钮
+
+```html
+<form method="POST" th:action="@{/logout}">
+    <input type="submit" value="Logout"/>
+</form>
+```
 
 
 
@@ -925,4 +967,190 @@ spring seurity 可以做，thymleafh默认就做了
 
 
 
+
+
+
+
 # 使用配置属性
+
+属性来源
+
+- JVM 系统属性
+- 操作系统环境变量
+- 命令行参数
+- 应用程序属性配置文件
+
+![img](spring学习.assets/图 5.1.jpg)
+
+
+
+## 配置数据源
+
+比如使用applicatoin.yml
+
+配置数据源
+
+```yml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/tacocloud
+    username: tacodb
+    password: tacopassword
+```
+
+还有指定schema和data
+
+```yml
+spring:
+  datasource:
+    schema:
+    - order-schema.sql
+    - ingredient-schema.sql
+    - tao-schema.sql
+    - user-schema.sql
+    data:
+    - ingredients.sql
+```
+
+
+
+server.port = 0就会每次用随机端口
+
+
+
+## 配置日志
+
+默认情况下spring boot 是使用Logback配置日志，默认级别INFO。
+
+可以自定义`src/main/resources/log.xml`
+
+比如
+
+```xml
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <logger name="root" level="INFO"/>
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
+```
+
+
+
+一些简单的配置也可以在yml中配置
+
+```yml
+logging:
+  path: /var/logs/
+  file: TacoCloud.log
+  level:
+    root: WARN
+    org:
+      springframework:
+        security: DEBUG
+```
+
+
+
+## 占位符
+
+`${name}`
+
+
+
+## 属性注入
+
+> 为了支持配置属性的属性注入，Spring Boot 提供了@ConfigurationProperties 注释。当放置在任何 Spring bean 上时，它指定可以从 Spring 环境中的属性注入到该 bean 的属性。
+
+可以将属性直接注入到控制器中，也可以注入到一个特定的配置bean，比如
+
+```java
+
+@Component
+@ConfigurationProperties(prefix="taco.orders")
+@Data
+public class OrderProps {
+    private int pageSize = 20;
+}
+```
+
+然后什么地方想用就用好了。
+
+
+
+## 声明配置元数据
+
+做什么用？
+
+是可选的，但是对于IDE的提示比较友好
+
+
+
+## profile
+
+比如各个不同的环境配置不同的数据库、日志级别
+
+
+
+配置
+
+
+
+激活
+
+```yml
+spring:
+  profiles:
+    active:
+    - prod
+```
+
+激活也是可以从多个途径的，在配置文件里面其实不太好。
+
+应该从外部决定，也就是运行的时候指定。比如用环境变量
+
+```bash
+%export SPRING_PROFILES_ACTIVE=prod
+```
+
+或者运行的时候
+
+```bash
+java -jar taco-cloud.jar --spring.profiles.active=prod
+```
+
+如果要指定多个配置，就用逗号分隔。
+
+
+
+
+
+# spring 集成
+
+
+
+## 创建REST服务
+
+- 在 Spring MVC 中定义 REST 端点
+- 启用超链接 REST 资源
+- 自动生成基于存储库的 REST 端点
+
+
+
+spring mvc 关于REST的注解
+
+| 注解            | HTTP 方法        | 典型用法     |
+| --------------- | ---------------- | ------------ |
+| @GetMapping     | HTTP GET 请求    | 读取资源数据 |
+| @PostMapping    | HTTP POST 请求   | 创建资源     |
+| @PutMapping     | HTTP PUT 请求    | 更新资源     |
+| @PatchMapping   | HTTP PATCH 请求  | 更新资源     |
+| @DeleteMapping  | HTTP DELETE 请求 | 删除资源     |
+| @RequestMapping | 通用请求处理     |              |
