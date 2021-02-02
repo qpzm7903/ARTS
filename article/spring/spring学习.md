@@ -1154,3 +1154,273 @@ spring mvc 关于REST的注解
 | @PatchMapping   | HTTP PATCH 请求  | 更新资源     |
 | @DeleteMapping  | HTTP DELETE 请求 | 删除资源     |
 | @RequestMapping | 通用请求处理     |              |
+
+
+
+`@RestController`
+
+在类上，标明是一个controller
+
+
+
+其余请求都可以指定路径
+
+
+
+参数
+
+路径参数
+
+```
+@PathVariable("id")
+// 其中id就是在路径上的占位符 比如 /{id}/xxx
+```
+
+请求参数
+
+body参数
+
+```
+@RequestBody
+```
+
+
+
+`@RequestMapping`
+
+```
+@RequestMapping(path="/design",                      // <1>
+                produces="application/json")
+```
+
+produces 不仅限制了输出，还限制了输入
+
+
+
+# 调用REST服务
+
+Spring 提供了 RestTemplate
+
+| 方法                 | 描述                                                         |
+| -------------------- | ------------------------------------------------------------ |
+| delete(...)          | 对指定 URL 上的资源执行 HTTP DELETE请求                      |
+| exchange(...)        | 对 URL 执行指定的 HTTP 方法，返回一个 ResponseEntity，其中包含从响应体映射的对象 |
+| execute(...)         | 对 URL 执行指定的 HTTP 方法，返回一个映射到响应体的对象      |
+| getForEntity(...)    | 发送 HTTP GET 请求，返回一个 ResponseEntity，其中包含从响应体映射的对象 |
+| getForObject(...)    | 发送 HTTP GET 请求，返回一个映射到响应体的对象               |
+| headForHeaders(...)  | 发送 HTTP HEAD 请求，返回指定资源 URL 的 HTTP 请求头         |
+| optionsForAllow(...) | 发送 HTTP OPTIONS 请求，返回指定 URL 的 Allow 头信息         |
+| patchForObject(...)  | 发送 HTTP PATCH 请求，返回从响应主体映射的结果对象           |
+| postForEntity(...)   | 将数据 POST 到一个 URL，返回一个 ResponseEntity，其中包含从响应体映射而来的对象 |
+| postForLocation(...) | 将数据 POST 到一个 URL，返回新创建资源的 URL                 |
+| postForObject(...)   | 将数据 POST 到一个 URL，返回从响应主体映射的对象             |
+| put(...)             | 将资源数据 PUT 到指定的URL                                   |
+
+
+
+# 异步消息
+
+- Java 消息服务（JMS）
+- RabbitMQ 和高级消息队列协议（AMQP）
+- Apache Kafka
+
+
+
+## JMS
+
+JMS 是一个 Java 标准，它定义了一个用于使用消息代理的公共 API。
+
+Spring 通过称为 JmsTemplate 的基于模板的抽象来支持 JMS
+
+Spring 还支持消息驱动 POJO 的概念：简单的 Java 对象以异步方式对队列或主题上到达的消息做出响应。
+
+
+
+
+
+推模型
+
+消息可用时将消息传递给代码
+
+
+
+拉模型
+
+代码请求消息并等待消息到达
+
+
+
+JmsTemplate 使用的是拉模型。
+
+
+
+接收的方法
+
+```java
+Message receive() throws JmsException;
+Message receive(Destination destination) throws JmsException;
+Message receive(String destinationName) throws JmsException;
+
+Object receiveAndConvert() throws JmsException;
+Object receiveAndConvert(Destination destination) throws JmsException;
+Object receiveAndConvert(String destinationName) throws JmsException;
+```
+
+
+
+
+
+使用消息侦听器
+
+```java
+@Component
+public class Listener {
+
+    @JmsListener(destination = "test.message")
+    public void receive(Object object) {
+        System.out.println(object);
+    }
+}
+
+```
+
+当消息可以被快速处理的时候，侦听器很好用
+
+
+
+主动获取消息
+
+```java
+@Component
+public class Listener {
+    private JmsTemplate jms;
+
+    @Autowired
+    public Listener(JmsTemplate jms) {
+        this.jms = jms;
+    }
+
+    public Object pull() {
+        return jms.receiveAndConvert("test.pull.message");
+    }
+}
+```
+
+
+
+
+
+
+
+发消息
+
+```java
+// 发送原始消息
+void send(MessageCreator messageCreator) throws JmsException;
+void send(Destination destination, MessageCreator messageCreator) throws JmsException;
+void send(String destinationName, MessageCreator messageCreator) throws JmsException;
+// 发送转换自对象的消息
+void convertAndSend(Object message) throws JmsException;
+void convertAndSend(Destination destination, Object message) throws JmsException;
+void convertAndSend(String destinationName, Object message) throws JmsException;
+// 发送经过处理后从对象转换而来的消息
+void convertAndSend(Object message, MessagePostProcessor postProcessor) throws JmsException;
+void convertAndSend(Destination destination, Object message, MessagePostProcessor postProcessor) throws JmsException;
+void convertAndSend(String destinationName, Object message, MessagePostProcessor postProcessor) throws JmsException;
+```
+
+
+
+如果不指定目的地
+
+```yml
+spring:
+  jms:
+    template:
+      default-destination: tacocloud.order.queue
+```
+
+
+
+
+
+依赖以及配置
+
+
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-artemis</artifactId>
+</dependency>
+```
+
+嵌入式artemis依赖
+
+```xml
+<dependency>
+  <groupId>org.apache.activemq</groupId>
+  <artifactId>artemis-jms-server</artifactId>
+</dependency>
+```
+
+
+
+| 属性                    | 描述                           |
+| ----------------------- | ------------------------------ |
+| spring.artemis.host     | broker 主机                    |
+| spring.artemis.port     | broker 端口                    |
+| spring.artemis.user     | 用于访问 broker 的用户（可选） |
+| spring.artemis.password | 用于访问 broker 的密码（可选） |
+
+
+
+
+
+使用独立安装的artemis服务器
+
+安装教程https://www.liaoxuefeng.com/wiki/1252599548343744/1304266721460258
+
+配置
+
+```yml
+spring:
+  artemis:
+    # 指定连接外部Artemis服务器，而不是启动嵌入式服务:
+    mode: native
+    # 服务器地址和端口号:
+    host: 127.0.0.1
+    port: 61616
+    # 连接用户名和口令由创建Artemis服务器时指定:
+    user: test
+    password: test
+```
+
+
+
+
+
+## RabbitMQ 和 AMQP
+
+> RabbitMQ 可以说是 AMQP 最优秀的实现，它提供了比 JMS 更高级的消息路由策略。JMS 消息使用接收方将从中检索它们的目的地的名称来寻址，而 AMQP 消息使用交换器的名称和路由键来寻址，它们与接收方正在监听的队列解耦。
+>
+> 
+
+![img](spring学习.assets/图 8.1 发送到 RabbitMQ 交换器的消息被路由到多个队列.jpg)
+
+可以参考RabbitMQ实战
+
+使用起来和jms差不多。
+
+
+
+pom依赖
+
+
+
+rabbitMQ安装
+
+https://www.rabbitmq.com/download.html
+
+spring boot配置
+
