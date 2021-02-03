@@ -234,17 +234,142 @@ docker run -dp 3000:3000 \
 
 
 
-容器间的网络连接
+1、创建网络
+
+`docker network create todo-app`
+
+
+
+2、开启mysql，并和此网络连接
+
+```bash
+docker run -d \
+    --network todo-app --network-alias mysql \
+    -v todo-mysql-data:/var/lib/mysql \
+    -e MYSQL_ROOT_PASSWORD=secret \
+    -e MYSQL_DATABASE=todos \
+    mysql:5.7
+```
+
+
+
+--network-alias 类似于域名的存在
 
 
 
 
 
+3、确认
+
+`docker exec -it <mysql-container-id> mysql -p`
+
+`show databases`
+
+
+
+4、连接mysql
+
+使用 `nicolaka/netshoot`容器
+
+`docker run -it --network todo-app nicolaka/netshoot` 
+
+也是连到同一个网络
+
+`dig mysql`
+
+查看信息
+
+其中
+
+;; ANSWER SECTION:
+
+ mysql.          600 IN  A   172.23.0.2
+
+mysql并不是域名，但是容器能够将其解析成ip
+
+
+
+5、启动app，连接数据库
+
+```bash
+docker run -dp 3000:3000 \
+  -w /app -v "$(pwd):/app" \
+  --network todo-app \
+  -e MYSQL_HOST=mysql \
+  -e MYSQL_USER=root \
+  -e MYSQL_PASSWORD=secret \
+  -e MYSQL_DB=todos \
+  node:12-alpine \
+  sh -c "yarn install && yarn run dev"
+```
+
+
+
+6、验证
+
+数据库中查看表
 
 
 
 
 
+使用docker compose
+
+是一个工具，用于帮助和分享多容器应用的。
+
+
+
+1、安装
+
+win、mac装docker的时候已经装了。
+
+linux需要自己额外装
+
+
+
+2、创建comose file
+
+是一个yml形式的文件
+
+在项目根目录创建
+
+3、启动
+
+`docker-compose up -d`
+
+4、销毁
+
+`docker-compose down`
+
+
+
+这种能用bind mount吗
+
+
+
+构建镜像的最佳实践
+
+1、漏洞扫描
+
+
+
+2、分层构建
+
+
+
+3、Multi-Stage Builds
+
+> an incredibly powerful tool to help use multiple stages to create an image
+
+
+
+
+
+入门之后
+
+1、Container Orchestration
+
+2、Cloud Native Computing Foundation Projects
 
 
 
