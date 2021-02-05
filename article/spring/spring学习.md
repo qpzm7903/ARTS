@@ -1412,9 +1412,18 @@ spring:
 
 使用起来和jms差不多。
 
+> AMQP协议比JMS要复杂一点，它只有Queue，没有Topic，并且引入了Exchange的概念。当Producer想要发送消息的时候，它将消息发送给Exchange，由Exchange将消息根据各种规则投递到一个或多个Queue
+
 
 
 pom依赖
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-amqp</artifactId>
+</dependency>
+```
 
 
 
@@ -1422,5 +1431,72 @@ rabbitMQ安装
 
 https://www.rabbitmq.com/download.html
 
+使用docker安装
+
+注意安装带有管理插件的镜像
+
 spring boot配置
+
+
+
+```yml
+spring:
+  profiles: prod
+  rabbitmq:
+    host: rabbit.tacocloud.com
+    port: 5673
+    username: tacoweb
+    password: l3tm31n
+```
+
+
+
+
+
+发送方法
+
+```java
+// 发送原始消息
+void send(Message message) throws AmqpException;
+void send(String routingKey, Message message) throws AmqpException;
+void send(String exchange, String routingKey, Message message) throws AmqpException;
+​
+// 发送从对象转换过来的消息
+void convertAndSend(Object message) throws AmqpException;
+void convertAndSend(String routingKey, Object message) throws AmqpException;
+void convertAndSend(String exchange, String routingKey, Object message) throws AmqpException;
+​
+// 发送经过处理后从对象转换过来的消息
+void convertAndSend(Object message, MessagePostProcessor mPP) throws AmqpException;
+void convertAndSend(String routingKey, Object message, MessagePostProcessor messagePostProcessor) throws AmqpException;
+void convertAndSend(String exchange, String routingKey, Object message, MessagePostProcessor messagePostProcessor) throws AmqpException;
+```
+
+
+
+收消息
+
+```java
+// 接收消息
+Message receive() throws AmqpException;
+Message receive(String queueName) throws AmqpException;
+Message receive(long timeoutMillis) throws AmqpException;
+Message receive(String queueName, long timeoutMillis) throws AmqpException;
+​
+// 接收从消息转换过来的对象
+Object receiveAndConvert() throws AmqpException;
+Object receiveAndConvert(String queueName) throws AmqpException;
+Object receiveAndConvert(long timeoutMillis) throws AmqpException;
+Object receiveAndConvert(String queueName, long timeoutMillis) throws AmqpException;
+​
+// 接收从消息转换过来的类型安全的对象
+<T> T receiveAndConvert(ParameterizedTypeReference<T> type) throws AmqpException;
+<T> T receiveAndConvert(String queueName, ParameterizedTypeReference<T> type) throws AmqpException;
+<T> T receiveAndConvert(long timeoutMillis, ParameterizedTypeReference<T> type) throws AmqpException;
+<T> T receiveAndConvert(String queueName, long timeoutMillis, ParameterizedTypeReference<T> type) throws AmqpException;
+```
+
+
+
+使用Kafka发消息
 
