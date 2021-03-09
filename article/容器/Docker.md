@@ -49,13 +49,13 @@ Registry（仓库）：是一个集中存储与分发镜像的服务。最常用
 
 
 
-入门
+# 入门
 
 安装docker后，跟着docker提示进行学习即可。
 
 
 
-todo list 
+## todo list 
 
 1、下载压缩工程
 
@@ -133,7 +133,7 @@ CMD 后跟的命令是容器启动后自动执行的命令
 
 
 
-分享app
+## 分享app
 
 使用dokcer注册中心，默认是docker hub
 
@@ -161,9 +161,9 @@ docker push qpzm7903/getting-started:tagname
 
 
 
-持久化db--Container Volumes
+## 持久化db
 
-使用volume，容器挂在在宿主机的文件系统上。
+Container Volumes：使用volume，容器挂在在宿主机的文件系统上。
 
 
 
@@ -189,7 +189,7 @@ docker push qpzm7903/getting-started:tagname
 
 
 
-使用 bind mounts
+## 使用 bind mounts
 
 > Named volumes are great if we simply want to store data, as we don't have to worry about *where* the data is stored.
 
@@ -228,7 +228,7 @@ docker run -dp 3000:3000 \
 
 
 
-多容器应用
+## 多容器应用
 
 > In general, **each container should do one thing and do it well**
 
@@ -313,7 +313,7 @@ docker run -dp 3000:3000 \
 
 
 
-使用docker compose
+## 使用docker compose
 
 是一个工具，用于帮助和分享多容器应用的。
 
@@ -347,7 +347,7 @@ linux需要自己额外装
 
 
 
-构建镜像的最佳实践
+## 构建镜像的最佳实践
 
 1、漏洞扫描
 
@@ -365,7 +365,7 @@ linux需要自己额外装
 
 
 
-入门之后
+## 入门之后
 
 1、Container Orchestration
 
@@ -382,3 +382,11 @@ linux需要自己额外装
 C:\Users\qpzm7903>docker run -d -p 80:80 docker/getting-started
 docker: error during connect: This error may indicate that the docker daemon is not running.: Post http://%2F%2F.%2Fpipe%2Fdocker_engine/v1.24/containers/create: open //./pipe/docker_engine: The system cannot find the file specified.
 See 'docker run --help'.
+
+
+
+
+
+
+
+[service mesh](https://www.notion.so/9a287daeb1c24ea8907f3f9d9c02f123#11b8a6dafb0a414da4eec2fc6f58b57d)

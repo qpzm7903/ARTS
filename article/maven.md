@@ -670,3 +670,44 @@ maven编译的时候会将文件进行二次编码，但是一些文件不需要
 
 
 继承的pom文件会这样吗
+
+
+
+
+
+## 编写maven插件
+
+http://maven.apache.org/guides/introduction/introduction-to-plugins.html
+
+1、插件能做什么
+
+> create jar files, create war files, compile code, unit test code, create project documentation, and on and on
+
+2、插件怎么写
+
+3、参数怎么传
+3.1、参数类型
+
+http://maven.apache.org/guides/plugin/guide-java-plugin-development.html
+
+4、作用时期怎么控制
+
+5、 mojo是什么？
+
+一个Maven的目标
+
+6、插件是什么
+
+包含任意多mojo的maven project
+
+7、使用一个插件要注意什么
+
+在build里面添加插件信息，可以配置参数，执行阶段，执行目标
+
+
+
+## 名词
+
+POM: project object model
+
+Mojo:A Mojo is really just a **goal** in Maven

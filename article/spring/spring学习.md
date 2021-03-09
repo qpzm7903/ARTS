@@ -1498,5 +1498,198 @@ Object receiveAndConvert(String queueName, long timeoutMillis) throws AmqpExcept
 
 
 
-使用Kafka发消息
+## 使用Kafka发消息
 
+![img](https://gblobscdn.gitbook.com/assets%2F-LrmLE3NwQoVJk02Q_BX%2F-Lu5sgbOP_-x8O_5C0ba%2F-Lu5tS-L3Ud30Cni7Npv%2F%E5%9B%BE%208.2.jpg?alt=media&token=67f2ec92-466a-450b-9646-9da50ff505d6)
+
+> JMS是JavaEE的标准消息接口，Artemis是一个JMS实现产品，AMQP是跨语言的一个标准消息接口，RabbitMQ是一个AMQP实现产品。
+>
+> Kafka没有实现任何标准的消息接口，它自己提供的API就是Kafka的接口。
+
+>  Kafka 仅利用 topic 来提供消息的发布/订阅
+>
+> topic 可以分成多个分区
+>
+> topic 被复制到集群中的所有 broker 中。集群中的每个节点充当一个或多个 topic 的 leader，负责该 topic 的数据并将其复制到集群中的其他节点。
+
+
+
+原理上非常简单
+
+```ascii
+                              ┌──────────┐
+                          ┌──>│Consumer-1│
+                          │   └──────────┘
+┌────────┐      ┌─────┐   │   ┌──────────┐
+│Producer│─────>│Topic│───┼──>│Consumer-2│
+└────────┘      └─────┘   │   └──────────┘
+                          │   ┌──────────┐
+                          └──>│Consumer-3│
+                              └──────────┘
+```
+
+用分区支持并发
+
+```ascii
+            ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐
+             Topic
+            │                   │
+                ┌───────────┐        ┌──────────┐
+            │┌─>│Partition-1│──┐│┌──>│Consumer-1│
+             │  └───────────┘  │ │   └──────────┘
+┌────────┐  ││  ┌───────────┐  │││   ┌──────────┐
+│Producer│───┼─>│Partition-2│──┼─┼──>│Consumer-2│
+└────────┘  ││  └───────────┘  │││   └──────────┘
+             │  ┌───────────┐  │ │   ┌──────────┐
+            │└─>│Partition-3│──┘│└──>│Consumer-3│
+                └───────────┘        └──────────┘
+            └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘
+```
+
+
+
+> 多个Partition只能保证接收消息大概率按发送时间有序，并不能保证完全按Producer发送的顺序。这一点在使用Kafka作为消息服务器时要特别注意，对发送顺序有严格要求的Topic只能有一个Partition。
+
+
+
+持久性
+
+> Kafka总是将消息写入Partition对应的文件
+
+具体实践可配置，consumer上线后可以继续收数据
+
+
+
+并发性、批处理
+
+可以一次行收、发批量数据
+
+
+
+### pom依赖
+
+```xml
+<dependency>
+    <groupId>org.springframework.kafka</groupId>
+    <artifactId>spring-kafka</artifactId>
+</dependency>
+```
+
+它的存在将触发 Kafka 的 Spring Boot 自动配置，它将在 Spring 应用程序上下文中生成一个 KafkaTemplate
+
+
+
+### kafka配置
+
+```yml
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset: latest
+      max-poll-records: 100
+      max-partition-fetch-bytes: 1000000
+```
+
+主机为必须配置，consumer为调优项
+
+bootstrap-servers可以为复数，集群可以提供多个kafka服务器
+
+
+
+### 发消息
+
+```java
+ListenableFuture<SendResult<K, V>> send(String topic, V data);
+ListenableFuture<SendResult<K, V>> send(String topic, K key, V data);
+ListenableFuture<SendResult<K, V>> send(String topic, Integer partition, K key, V data);
+ListenableFuture<SendResult<K, V>> send(String topic, Integer partition, Long timestamp, K key, V data);
+ListenableFuture<SendResult<K, V>> send(ProducerRecord<K, V> record);
+ListenableFuture<SendResult<K, V>> send(Message<?> message);
+ListenableFuture<SendResult<K, V>> sendDefault(V data);
+ListenableFuture<SendResult<K, V>> sendDefault(K key, V data);
+ListenableFuture<SendResult<K, V>> sendDefault(Integer partition, K key, V data);
+ListenableFuture<SendResult<K, V>> sendDefault(Integer partition, Long timestamp, K key, V data);
+```
+
+
+
+### 收消息
+
+
+
+监听
+
+
+
+
+
+### 安装kakfa
+
+
+
+#### docker
+
+参考 https://medium.com/big-data-engineering/hello-kafka-world-the-complete-guide-to-kafka-with-docker-and-python-f788e2588cfc
+
+https://github.com/wurstmeister/kafka-docker
+
+
+
+### 可执行文
+
+https://www.liaoxuefeng.com/wiki/1252599548343744/1282388443267106
+
+参考里面的安装使用
+
+
+
+# spring integration
+
+不知道做什么用
+
+
+
+# Reactive spring
+
+flux、mono类似java8的流式编程，但是底层不同。
+
+
+
+适合用在什么场景？
+
+> 响应式Web编程非常适合具有流数据的应用程序以及使用该数据并将其流传输给用户的客户端。 这对开发传统的CRUD应用程序不是很好
+
+
+
+
+
+## 响应式API
+
+典型的基于servlet是同步、阻塞式的web框架
+
+spring 推出 spring webflux，一个非阻塞式异步的web框架
+
+![img](spring学习.assets/11.1.png)
+
+
+
+和spring mvc的对比
+
+![img](spring学习.assets/11.2.png)
+
+
+
+> Spring WebFlux 没有耦合到 Servlet API，因此它不需要运行一个 Servlet 容器。相反，它可以在任何非阻塞 web 容器上运行，包括 Netty、Undertow、Tomcat、Jetty 或任何 Servlet3.1 或更高版本的容器。
+
+
+
+
+
+# cloud native spring
+
+
+
+
+
+# deployed spring
