@@ -146,6 +146,30 @@ Reactor通过一个线程处理大量的连接，
 
 
 
+核心
+
+使用`SelectionKey`的attach、attachment、方法
+
+```
+ Object attach(Object ob)
+ // 将对象附加到选择键上，并且返回上一次附加的对象
+ 
+Object attachment()
+// 返回当前附加的对象
+
+```
+
+
+
+`selectionKey`是什么
+
+> A token representing the registration of a SelectableChannel with a Selector.
+> A selection key is created each time a channel is registered with a selector.
+
+
+
+
+
 ### 2.2 多线程实现
 
 ## 3、优缺点
@@ -192,11 +216,15 @@ TCP/UDP
 
 
 
-基本概念
+## 基本概念
 
-channel
+### channel
 
-NIO的基础概念，代表一个连接，可以执行读取、写入IO操作。netty对channel的IO操作是非阻塞的。
+>
+>
+>通道是Netty的核心概念之一，代表网络连接，由它负责同对端进行网络通信，既可以写入数据到对端，也可以从对端读取数据
+
+
 
 channelFuture
 

@@ -678,7 +678,9 @@ spring data jpa 定义了一种小型的DSL，持久化的细节再repository的
 
 
 
-# spring 安全
+# spring security
+
+了解spring security怎么工作，怎么自定义
 
 自动配置 Spring Security
 
@@ -693,6 +695,8 @@ spring data jpa 定义了一种小型的DSL，持久化的细节再repository的
 
 
 ## spring security
+
+
 
 依赖
 
@@ -727,7 +731,7 @@ spring data jpa 定义了一种小型的DSL，持久化的细节再repository的
 
 提示使用登录页面进行身份验证，而不是使用 HTTP 基本对话框。
 
-为多个用户提供注册页面，让新的 Taco Cloud 用户可以注册。
+为多个用户提供注册页面，让新的用户可以注册。
 
 为不同的请求路径应用不同的安全规则。例如，主页和注册页面根本不需要身份验证。
 
@@ -742,6 +746,42 @@ logging.level.org.springframework.security=DEBUG
 
 
 ## 配置spring security
+
+```java
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                .antMatchers("/", "/home").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll();
+    }
+
+    @Bean
+    @Override
+    public UserDetailsService userDetailsService() {
+        UserDetails user =
+                User.withDefaultPasswordEncoder()
+                        .username("user")
+                        .password("password")
+                        .roles("USER")
+                        .build();
+
+        return new InMemoryUserDetailsManager(user);
+    }
+}
+```
+
+通过使用`EnableWebSecurity`注解，并继承`WebSecurityConfigureAdaptor`类，覆盖里面的一些方法，比如configure，指定哪些路径需要鉴权，哪些不要，登录界面、退出登录、以及`serDetailService`方法，指定一些用户
 
 
 
@@ -780,20 +820,25 @@ protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
 ### 内置用户-基于内存
 
-比如
+一般在测试的场景使用
 
 ```java
-@Override
-protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
     auth
-        .inMemoryAuthentication()
+        .inMemoryAuthentication() // 在内存中认证身份
             .withUser("buzz")
                 .password("infinity")
-                .authorities("ROLE_USER")
+                .authorities("ROLE_USER") // 授予 USER权限  等价于 .role("USER")
             .and()
             .withUser("woody")
                 .password("bullseye")
                 .authorities("ROLE_USER");
+	}
 }
 ```
 
@@ -848,13 +893,17 @@ WebSecurityConfigurerAdapter.configure
 比如
 
 ```java
-@Override
-protected void configure(HttpSecurity http) throws Exception {
-    http
-        .authorizeRequests()
-            .antMatchers("/design", "/orders")
-                .hasRole("ROLE_USER")
-            .antMatchers(“/”, "/**").permitAll();
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests() // 授权访问
+                .antMatchers("/design", "/orders")
+                    .hasRole("ROLE_USER")
+                .antMatchers(“/”, "/**").permitAll();
+        }
 }
 ```
 
@@ -910,7 +959,9 @@ protected void configure(HttpSecurity http) throws Exception {
 
 FAQ
 
-spring security 怎么做授权、鉴权的
+疑问：spring security 怎么做授权、鉴权的
+
+使用filter
 
 ### 配置登陆界面
 
@@ -967,7 +1018,62 @@ spring seurity 可以做，thymleafh默认就做了
 
 
 
+## spring security 架构
 
+安全的两个问题
+
+- authentication (who are you?) 
+- authorization or Access Control (what are you allowed to do?)
+
+
+
+### authentication 身份认证
+
+```java
+interface AuthenticationManager {
+    /**
+    
+    */
+    Authentication authenticate(Authentication authentication) throws AuthenticationException;
+}
+
+public class ProviderManager implements AuthenticationManager{
+    
+}
+```
+
+用的大多数是providerManager，其下有一个代理的职责链
+
+
+
+### authorization 授权 or Access Control  
+
+
+
+### Web Security
+
+在sring中，是基于Filter做的spring security
+
+```
+client->filter->filter->filter->...->Servlet
+```
+
+### 为分发和授权做请求匹配
+
+```java
+@Configuration
+@Order(SecurityProperties.BASIC_AUTH_ORDER - 10)
+public class ApplicationConfigurerAdapter extends WebSecurityConfigurerAdapter {
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.antMatcher("/match1/**")
+      .authorizeRequests()
+        .antMatchers("/match1/user").hasRole("USER")
+        .antMatchers("/match1/spam").hasRole("SPAM")
+        .anyRequest().isAuthenticated();
+  }
+}
+```
 
 
 
