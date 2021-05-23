@@ -856,13 +856,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 - SCryptPasswordEncoder —— 应用了 scrypt 散列加密
 - StandardPasswordEncoder —— 应用 SHA-256 散列加密
 
+![image-20210521200310691](spring学习.assets/image-20210521200310691.png)
+
+只要确保在对密码加解密的适合用同一个encoder就可以
+
 
 
 ### 基于LADP
 
 是什么东西
 
-### 自定义--by jpa
+### 自定义用户服务
+
+不管是基于内存、jdbc、ldap都是通过覆写WebSecurityConfigurerAdapter类。
+
+自定义服务是通过实现`UserDetailsService`接口。
+
+主要是实现里面的`loadUserBUsername`方法。注意此方法返回的是`UserDetails`对象，实现的时候可以继承这个类。
+
+
 
 
 
