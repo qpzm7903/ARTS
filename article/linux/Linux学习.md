@@ -12,6 +12,122 @@ su -
 
 
 
+# 基础命令
+
+
+
+grep
+
+
+
+find 
+
+
+
+## 系统状态检测
+
+
+
+ifconfig 网卡、网络信息
+
+uname [-a]系统内核、系统架构信息
+
+uptime 系统负载
+
+free [-h] 内存使用情况
+
+who 当前用户信息
+
+last 访问记录
+
+ping 测试网络连通性
+
+tracepath 显式数据包经过的路由信息
+
+netstat 网络、路由表等网络信息
+
+history 命令历史
+
+
+
+## 查找定位文件命令
+
+pwd 当前工作目录
+
+cd 切换目录
+
+cd - 返回上一次所在的目录
+
+cd .. 进入上一级目录
+
+cd ~ 进入家目录
+
+
+
+ls 显式目录文件信息
+
+tree 树状图展示目录内容
+
+find 查找文件位置
+
+locate 快速搜索文件所在的位置
+
+whereis 搜索二进制程序所在的位置
+
+which 
+
+
+
+## 文本编辑命令
+
+cat 查看
+
+more 查看
+
+head 查看
+
+tail 查看
+
+tr 替换
+
+wc 单词统计
+
+stat 文件的具体信息
+
+grep 提取文本内容
+
+cut 按列提取
+
+diff 比较差异
+
+uniq 去除重复行
+
+sort 排序
+
+
+
+## 文件目录管理
+
+touch
+
+mkdir
+
+cp
+
+mv
+
+rm
+
+dd
+
+file
+
+tar 打包或者解压
+
+
+
+
+
 # shell脚本编程
 
 

@@ -40,6 +40,41 @@ set undodir=~\vimfiles\undodir
 
 
 
+## 基础配置
+
+### 行号
+
+```txt
+:set number
+```
+
+
+
+### 语法高亮
+
+```
+syntax on
+```
+
+
+
+### tab键转为空格
+
+```
+set expandtab
+set softtabstop=4 // 转为4个空格
+```
+
+
+
+
+
+
+
+
+
+
+
 # 操作
 
 ## 移动光标
