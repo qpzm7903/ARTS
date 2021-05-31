@@ -58,3 +58,13 @@
 
 坚持不懈
 
+
+
+## 文档和代码
+
+Code Tells You How, Comments Tell You Why
+
+文档说明设计
+
+代码体现细节
+
