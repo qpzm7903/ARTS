@@ -190,10 +190,10 @@ Main-Class: org.springframework.boot.loader.JarLauncher
 | 类型     | 含义                                                         |
 | -------- | ------------------------------------------------------------ |
 | compile  | 默认的范围，编译、测试、运行三种classpath都有效              |
-| test     | 只对测试classpath有效，在编译测试代码、运行测试的时候需要    |
-| provided | 对编译和测试classpath有效，运行时无效，比如servlet-api，运行时容器以提供，就不需要 |
-| runtime  | 测试和运行时classpath有效，比如JDBC驱动实现，编译时主代码无效 |
-| system   | 系统依赖范围，和provided范围一致                             |
+| test     | 只对测试classpath有效，在编译测试代码、运行测试的时候需要，通常的unit,h2等 |
+| provided | 对编译和测试classpath有效，运行时无效，比如servlet-api，运行时容器已提供，就不需要。provide不会被打包，也不具有传递性。 |
+| runtime  | 测试和运行时classpath有效，比如JDBC驱动实现，编译时此代码无效。比如JDBC API的依赖，在运行时不需要，只需要其实现 |
+| system   | 系统依赖范围，和provided范围一致。依赖项不会从maven仓库获取，而需要从本地文件系统提供。使用时，一定要配合systemPath属性 |
 
 | scope    | 对于编译classpath有效 | 对于测试classpath有效 | 对于运行时classpath有效 |
 | -------- | --------------------- | --------------------- | ----------------------- |
