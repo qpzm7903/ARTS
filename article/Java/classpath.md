@@ -12,7 +12,7 @@
 
 
 
-推荐运行时指定，这样可以为每个程序指定，而不使用全局的相互影响。
+推荐运行时指定，这样可以为每个程序指定，而不使用全局导致相互影响。
 
 ### classpath分隔符
 
@@ -38,9 +38,9 @@ linux
 
 指定到jar文件或zip文件
 
-假设要寻找的类时 `Cool.class`,其包路径时 `utility.myapp`
+假设要寻找的类时 `Cool.class`,其包路径是 `utility.myapp`
 
-此包所在文件系统上的路径时 `c:\java\myClasses\utility\myapp`
+此包所在文件系统上的路径是 `c:\java\myClasses\utility\myapp`
 
 将其打包成`myClasses.jar`也就是说从包路径的根目录打包,打包后jar包出现在myclasses路径下
 
@@ -56,9 +56,9 @@ linux
 
 ### 有包路径的class文件
 
-假设要寻找的类时 `Cool.class`,其包路径时 `utility.myapp`
+假设要寻找的类时 `Cool.class`,其包路径是 `utility.myapp`
 
-此包所在文件系统上的路径时 `c:\java\myClasses\utility\myapp`
+此包所在文件系统上的路径是 `c:\java\myClasses\utility\myapp`
 
 那么在设置classpath的时候需要设置为
 
