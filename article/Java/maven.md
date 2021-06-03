@@ -24,7 +24,7 @@
 
 
 
-### setting文件
+## setting文件
 
 setting文件分为全局和用户范围。
 
@@ -45,9 +45,83 @@ setting文件分为全局和用户范围。
 
 ### 配置远程仓库
 
+1、在pom文件中添加 `repositories`标签
+
+```xml
+<project>
+...
+  <repositories>
+    <repository>
+      <id>my-repo1</id>
+      <name>your custom repo</name>
+      <url>http://jarsm2.dyndns.dk</url>
+    </repository>
+    <repository>
+      <id>my-repo2</id>
+      <name>your custom repo</name>
+      <url>http://jarsm2.dyndns.dk</url>
+    </repository>
+  </repositories>
+...
+</project>
+```
+
+
+
+2、在setting文件中添加profile，注意要在activeProfiles中激活配置的profile
+
+```xml
+<settings>
+ ...
+ <profiles>
+   ...
+   <profile>
+     <id>myprofile</id>
+     <repositories>
+       <repository>
+         <id>my-repo2</id>
+         <name>your custom repo</name>
+         <url>http://jarsm2.dyndns.dk</url>
+       </repository>
+     </repositories>
+   </profile>
+   ...
+ </profiles>
+ 
+ <activeProfiles>
+   <activeProfile>myprofile</activeProfile>
+ </activeProfiles>
+ ...
+</settings>
+
+```
+
+
+
+也可以在使用命令时指定，比如`mvn -Pprofile`
+
+
+
 
 
 ### 配置镜像 
+
+```xml
+<settings>
+  ...
+  <mirrors>
+    <mirror>
+      <id>other-mirror</id>
+      <name>Other Mirror Repository</name>
+      <url>https://other-mirror.repo.other-company.com/maven2</url>
+      <mirrorOf>central</mirrorOf>
+    </mirror>
+  </mirrors>
+  ...
+</settings>
+```
+
+`mirrorOf`属性表示时对某个名为`central`的repository的镜像
 
 
 
@@ -80,11 +154,38 @@ setting文件分为全局和用户范围。
 
 
 
+### repository优先级/顺序
+
+maven将从以下的顺序去寻找依赖，直到找到一个为止
+
+1. setting
+
+   1. 全局的settings.xml
+   2. 用户级别的settings.xml
+
+2. pom
+
+   
+
+   1. 本地的pom.xml
+   2. 递归的寻找父pom
+   3. 超级pom（里面定义了maven的中央仓库）
+
+3. effective POMs from dependency path to the artifact.
+
+
+
+从从仓库下载依赖时，首先从其镜像下载。
 
 
 
 
 
+### 查看有效的setting以及pom
+
+`mvn help:effective-settings`
+
+`mvn help:effective-pom -Dverbose`
 
 ## POM文件
 
@@ -194,6 +295,9 @@ Main-Class: org.springframework.boot.loader.JarLauncher
 | provided | 对编译和测试classpath有效，运行时无效，比如servlet-api，运行时容器已提供，就不需要。provide不会被打包，也不具有传递性。 |
 | runtime  | 测试和运行时classpath有效，比如JDBC驱动实现，编译时此代码无效。比如JDBC API的依赖，在运行时不需要，只需要其实现 |
 | system   | 系统依赖范围，和provided范围一致。依赖项不会从maven仓库获取，而需要从本地文件系统提供。使用时，一定要配合systemPath属性 |
+| import   |                                                              |
+
+
 
 | scope    | 对于编译classpath有效 | 对于测试classpath有效 | 对于运行时classpath有效 |
 | -------- | --------------------- | --------------------- | ----------------------- |
@@ -361,6 +465,12 @@ A->E（2.0）
      <version>${springframwork.versoin}</version>
 </dependency>
 ```
+
+### 依赖管理
+
+
+
+
 
 ### 优化依赖
 
