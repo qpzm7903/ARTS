@@ -390,3 +390,41 @@ See 'docker run --help'.
 
 
 [service mesh](https://www.notion.so/9a287daeb1c24ea8907f3f9d9c02f123#11b8a6dafb0a414da4eec2fc6f58b57d)
+
+
+
+# docker发展史
+
+
+
+1、容器和虚拟机的区别是什么
+
+
+
+
+
+# docker技术组成
+
+## Docker引擎
+
+Docker引擎组成部件：Docker client、Docker daemon、containerd、runc
+
+功能；负责容器的创建、运行
+
+
+
+client
+
+daemon
+
+containerd：容器运行
+
+runc：负责创建容器
+
+
+
+## Docker镜像
+
+1、类似模板
+
+2、多层组成

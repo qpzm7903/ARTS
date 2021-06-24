@@ -48,7 +48,7 @@ Main-Class: classname
 
 
 
-
+通过jarFile打开Jar包，然后遍历JarFile的每一项
 
 ##  参考
 
