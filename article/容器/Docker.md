@@ -428,3 +428,73 @@ runc：负责创建容器
 1、类似模板
 
 2、多层组成
+
+
+
+### 命令
+
+`docker container run image:lab`
+
+
+
+`docker container stop [containerId or container-name]`
+
+
+
+`docker container ls`
+
+
+
+`docker container  rm [container id or container name]`
+
+
+
+`docker container run image:lab -p host port:container port`
+
+
+
+
+
+## 网络管理
+
+
+
+
+
+
+
+# 使用场景
+
+## 应用容器化
+
+过程：
+
+1、写应用代码
+
+2、写dockerfile
+
+3、构建
+
+
+
+容器化命令
+
+`docker image build`
+
+`FROM`
+
+`RUN`
+
+`COPY`
+
+`EXPOSE`
+
+`ENTRYPOINT`
+
+
+
+# 扩展
+
+## Docker compose
+
+单引擎方式进行多容器管理的部署和管理
