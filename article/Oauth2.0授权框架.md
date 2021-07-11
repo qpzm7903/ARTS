@@ -548,6 +548,8 @@ Cookie: JSESSIONID=54832D134E645907B1434963CF95AAA0
 
 [GitHub OAuth第三方登录示例教程](https://www.ruanyifeng.com/blog/2019/04/github-oauth.html)
 
+[spring-OAuth-demo](https://github.com/lansinuote/Spring-Oauth2-Toturials)
+
 
 
 
