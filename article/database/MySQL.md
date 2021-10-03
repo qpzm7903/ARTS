@@ -125,6 +125,12 @@ mysql -u roo -p  回车
 ALTER USER 'root'@'localhost' identified with mysql_native_password by 'admin';
 ```
 
+# docker mysql
+
+```bash
+docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql
+```
+
 
 
 ## 参考
