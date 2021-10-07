@@ -27,3 +27,12 @@ ssh-keygen -t rsa -b 4096 -C "yx372114301@qq.com"
 clip < ~/.ssh/id_rsa.pub
 ```
 
+
+
+问题
+
+# github上传ssh-key后仍须输入密码的问题
+
+https://blog.csdn.net/baidu_35085676/article/details/53456884
+
+https 和  ssh的认证方式不同，所以需要
