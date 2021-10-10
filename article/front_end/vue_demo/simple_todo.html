@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simple todo</title>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- 输入 -->
+        <input v-model='todo_item' @keyup.enter='add'>
+
+    
+ <!-- 列表 -->
+
+        <div class="main">
+            <ul class="todo-list">
+                <li class="tood-item" v-for="(item,index) in todo_list">
+                    <div class="view">
+                        <span class="index">{{ index }}</span>
+                        <label>{{ item }}</label>
+                        <button class="delete" @click='remove(index)'>删除</button>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="statics" v-show="todo_list.length != 0">
+            <strong >{{ todo_list.length }} todo items left</strong>
+            <button class="clear" @click='clear'>clear</button>
+        </div>
+
+        <!-- 底部 -->
+        <div>
+
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <script>
+        /**
+
+        新增 
+            列表
+            输入
+            新增数据
+        删除 
+        统计 
+        清空 
+        隐藏
+        */
+        var app = new Vue({
+            el: '.container',
+            data: {
+                todo_list: [
+                    "item1", "item2"
+                ],
+                todo_item: 'todo'
+            },
+            methods: {
+                add: function () {
+                    if (this.todo_item === '') {
+                        return;
+                    }
+                    this.todo_list.push(this.todo_item);
+                    this.todo_item = ''
+                },
+                remove: function (index) {
+                    console.log(index);
+                    this.todo_list.splice(index, 1);
+                },
+                clear:function(){
+                    this.todo_list = []
+                }
+            }
+
+        })
+    </script>
+</body>
+
+</html>
