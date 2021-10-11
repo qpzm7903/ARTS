@@ -341,17 +341,274 @@ p = "abc";  // 指向了 "abc"字符数组的第一个字符
 
 
 
+输入输出
+
+```c
+    char p[10];
+    scanf("%s", p); // 会跳过空白字符
+    printf("%s\n", p);
+
+	getchar(); // 获取一个字符
+```
+
+
+
+库函数
+
+```c
+#include <string.h>
+
+// 1. strcopy
+char *strcpy(char *target, const char *source);
+
+// 2. strcat 字符串拼接
+char *strcat(char *target, const char *source);
+
+// 3. strcmp 
+// 根据 s1 是否小于、等于、大于s2，返回小于，等于，大于0的值
+int strcmp(const char *s1, const char *s2);
+
+// 4. strlen
+size_t strlen(const char *s);
+```
+
+
+
+命令行参数
+
+```c
+// 比如 ls -l 
+// -l 就是参数
+int main(int argc, char *argv[]){
+    // argc  参数个数
+    // argv 参数列表
+}
+```
+
+
+
 
 
 # 预处理器
 
 
 
+```c
+// 宏定义
+#define 
+
+// 文件包含
+#include 
+
+// 条件编译
+#if
+#ifdef
+#ifndef
+#elif
+#else
+#endif
+```
+
+
+
+
+
+
+
 # 编写大规模程序
+
+源文件 
+
+- 函数定义
+- 外部变量
+- 包含main函数
+
+头文件
+
+- 可以在源文件之间共享的信息
+  - 外部变量
+  - 宏定义
+  - 函数
+  - 。。。
+
+
+
+```c
+// c语言库头文件
+// 搜索系统头文件所在目录，比如 /usr/include
+#include <filename>
+
+// 其他头文件
+// 搜索当前目录，然后搜索系统头文件目录，也可写绝对路径  也可以增加搜索目录 -I 参数
+#include "filename"
+```
+
+
+
+#include 搜索路径
+
+
+
+
+
+共享变量声明
+
+```c
+int i;  // no
+
+extern int i; // yes
+```
+
+
+
+避免多次include
+
+```c
+#ifndef xxxx
+#define xxxx
+#endif
+```
+
+
+
+构建多文件程序
+
+- 编译
+  - 每个源文件单独编译，头文件不需要编译，得到.o 文件
+
+- 链接
+  - 把目标文件和库函数的代码结合起来得到可执行文件
+
+
+
+手动构建
+
+```
+gcc -o fmt fmt.c line.c word.c
+./fmt <quote > newquote
+```
+
+
+
+
+
+
+
+makefile
+
+```
+fmt: fmt.o word.o line.o
+	gcc -o fmt fmt.o word.o line.o
+
+fmt.o: fmt.c word.h line.h
+	gcc -c fmt.c
+
+word.o: word.c word.h
+	gcc -c word.c
+
+line.o: line.c line.h
+	gcc -c line.c
+```
+
+每一组中，第一行都是依赖，第二行是实际执行的命令，依赖发生变化，那么重新执行就会只编译变化的部分。
+
+
+
+重新构建
+
+
+
+
+
+
+
+
 
 
 
 # 结构 联合 枚举
+
+
+
+## struct
+
+类似其他语言的对象，有字段，类型
+
+```c
+strcut Part{
+    int number;
+    char name[NAME_LEN+1];
+    int on_hand;
+};
+// 声明的同时，创建了两个实例
+
+// 通过 . 操作符获取里面的字段
+Part part = {222,"hello",10};
+// 取地址则 &part1.number
+
+#include <stdio.h>
+#define NAME_LEN 100
+
+struct Part
+{
+    int number;
+    char name[NAME_LEN + 1];
+    int on_hand;
+};
+
+int main()
+{
+    struct Part part = {222, "hello", 10};
+    printf("%d\n",part.number);
+    printf("%s\n",part.name);
+    printf("%d\n",part.on_hand);
+    return 0;
+}
+
+// 可以通过 typedef来定义名词,比如
+typedef struct{
+    int number;
+    char name[100];
+    int on_hand;
+} Part;
+
+// 使用的时候直接使用Part
+```
+
+
+
+注意结构体在函数中也是值传递，所以会复制一份，所以最好用指针传递
+
+结构可以嵌套
+
+
+
+## union
+
+也是由一个或者多个成员构成，成员可能具有不同的数据类型，占据不同过得内存空间，但是编译器只为union中最大的成员分配足够的内存空间。
+
+也就是说，union同一时刻，只能是其中的一个值，不像struct，可以每个字段都有值。
+
+```c
+union{
+    int i;
+    float f;
+}u;
+```
+
+此外，union和struct类似
+
+用途，可以省空间
+
+## enumeration
+
+```c
+enum {A,B,C,D} s1;
+```
+
+
+
+
 
 
 
