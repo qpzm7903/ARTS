@@ -614,33 +614,271 @@ enum {A,B,C,D} s1;
 
 # 指针的高级应用
 
+动态内存分配、动态释放
 
-
-声明
-
-
-
-程序设计
-
-
-
-低级程序设计
+- malloc 分配内存块，但不初始化
+- calloc 分配内存块，并清除对应内存块
+- realloc 调整先前分配的内存块
+  - 必须是经过malloc or calloc or realloc获取的内存才能进行调整
+- free 释放
 
 
 
-标准库
+函数返回的是void*指针，本质是通用指针
+
+无法分配时，返回空指针，意思时指向空的指针，为 NULL
+
+```c
+p = malloc(10000);
+if(p == NULL){
+    // ...
+}
+```
 
 
 
-输入、输出
+动态分配字符串
+
+```c
+void *malloc(size_t size);
+
+void *p;
+p = (char*) malloc(3+1);
+strcpy(p,"abc");
+
+// 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main()
+{
+    char *p;
+    p = (char *)malloc(3 + 1);
+    strcpy(p, "abc");
+    printf("%s\n", p);
+}
+```
 
 
 
-错误处理
+为数组分配空间
+
+```c
+int *a;
+int n = 10;
+a = malloc(n * sizeof(int));
+for (int i = 0; i < n; i++)
+{
+    printf("a[%d]=%d\n", i, a[i]);
+}
+```
 
 
 
-其他库函数
+给结构体分配内存
+
+```c
+```
+
+
+
+
+
+释放内存
+
+```c
+void free(void *ptr);
+
+void *p;
+p = malloc(xxx);
+free(p);
+// p变成了空指针
+```
+
+
+
+动态分配在建立表、树、图等动态结构非常有用。
+
+
+
+
+
+指向函数的指针
+函数也占用内存，也有自己的地址，所以指针应该也能指向函数
+
+
+
+```c
+// *f 周围的括号说明f是个指向函数的指针，其反回类型位double，入参位double
+double integrate(double (*f)(double), double a, double b);
+
+
+double integrate(double (*f)(double), double a, double b){
+    // *f 指向函数，后面加括号表示调用
+    double sum = (*f)(a);
+}
+```
+
+
+
+qsort里使用的函数指针
+
+```c
+void qsort (void *__base, size_t nmemb, size_t __size,
+		   int (*compare)(const void*,const void *));
+// base 指向数组的第一个元素
+// nmemb 排序的数量
+// 元素的大小
+// compare 指向比较函数的一个指针
+
+```
+
+
+
+升序排序例子
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int compare_arr(const void *p, const void *q)
+{
+    return *(int *)p > *(int *)q;
+}
+
+int main()
+{
+    int a[10];
+    a[0] = 5;
+    a[1] = 4;
+    a[2] = 3;
+    a[3] = 2;
+    a[4] = 1;
+
+    qsort(a, 5, sizeof(int), compare_arr);
+    for (int i = 0; i < 5; i++)
+    {
+        printf("a[%d]=%d\n", i, a[i]);
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+# 声明
+
+
+
+# 程序设计
+
+
+
+# 低级程序设计
+
+## 按位运算
+
+移位运算
+
+```
+<< 左移     右端补0
+>> 右移     无符号数或非负数，左端补0，其他由实现定义
+```
+
+
+
+按位反、与、异或
+
+```
+~  按位反
+&
+^
+|
+```
+
+
+
+
+
+# 标准库
+
+
+
+
+
+# 输入、输出
+
+
+
+# 错误处理
+
+c语言不适合做
+
+## assert函数
+
+```c
+#include <assert.h>
+
+int main(){
+    int a = 0;
+    assert(a > 10);
+}
+>>> 
+a.out: assert.c:5: main: Assertion `a > 10' failed.
+Aborted
+```
+
+
+
+缺点，引入额外的检查，会增加运行时间。
+
+禁用assert
+
+```c
+#define DEBUG
+#include <assert.h>
+
+```
+
+
+
+`errno.h`
+
+
+
+
+
+
+
+## 信号
+
+信号宏，`signal.h`定义了一些列的宏。
+
+
+
+`signal`函数
+
+```c
+void (*signal(int sig, void(*func)(int))(int);
+```
+
+
+
+
+
+## setjmp 和 longjmp
+
+
+
+# 其他库函数
 
 
 
