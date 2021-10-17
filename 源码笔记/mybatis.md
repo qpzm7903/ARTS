@@ -80,6 +80,21 @@ graph LR
 
 ## 配置
 
+构造需要由来源，所以首先得把配置文件提供，mybatis里面提供了一个工具类读取配置文件
+
+```java
+  /**
+   * Returns a resource on the classpath as a Stream object
+   *
+   * @param resource The resource to find
+   * @return The resource
+   * @throws java.io.IOException If the resource cannot be found or read
+   */
+org.apache.ibatis.io.Resources#getResourceAsStream(String resource)
+```
+
+获取到输入流后，传递给`SqlSession`的工厂类，里面进行构造。
+
 ```java
 SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 ```
@@ -93,22 +108,73 @@ Configuration configuration = parser.parse()
 
 而在`XMLConfigBuilder`的`parse`方法对xml配置进行解析，以及对mapper文件进行解析。
 
+而解析XML文件，mybatis用的是 `javax.xml`相关的类，但是mybatis自己封装了一些类，比如XPathParser，XNode等。
 
 
-Configuration的重要配置有
+
+那么解析的过程究竟在做什么呢？
+
+首先看配置构建器的类结构
+
+```java
+public abstract class BaseBuilder{
+
+}
+public class XMLConfigBuilder extends BaseBuilder {
+  private boolean parsed;
+  private final XPathParser parser;
+  private String environment;
+  private final ReflectorFactory localReflectorFactory = new DefaultReflectorFactory();
+}
+```
+
+XMLConfigBuilder里初始化了`Configuration`对象
+
+
+
+```java
+
+  private XMLConfigBuilder(XPathParser parser, String environment, Properties props) {
+    super(new Configuration());
+      ...
+  }
+```
+
+
+
+构造好`configuration`后，开始解析xml文件，对`configuration`对象赋值
+
+扫描平处理的配置有
+
+- properties
+  - 
 
 - settings
   - 对应settings配置
+  - 有很多配置，以及默认值
+    - 
+- logImpl
+  - 来自settings里
 
 - environment
   - 也就是配置里面的environment标签内容
     - 包含datasource
 - mapperRegistry
 - typerHandlerRegistry
-  - 
+  - typeAliases标签的内容
 - typeAlaisRegistry
 - mappedStatements
 - sqlFragments
+- plugins
+  - plugins配置里的interceptor以及对应配置
+  - 会加入到interceptorChain中
+- objectFactory
+- objectWrapperFactory
+- reflectorFactory
+- mappers
+  - 比较复杂的一块，因为要求读取mapper文件
+  - 遍历，使用XMLMapperBuilder，并把configuration传入
+    - 会用到XMLStatementBuilder
 
 
 
@@ -278,6 +344,31 @@ classDiagram
 - RoutingStatementHandler
   - 根绝mapper配置里的statementType配置创建对应的statmentHandler
   - 外观？组合？
+
+
+
+## SqlSession的构造过程-详解
+
+`SqlSession`是通过其工厂构建来的，那么这个工厂依赖了`Configuration`，所以先看看`Configuration`怎么构造的
+
+
+
+### Configuration构造过程
+
+构造需要由来源，所以首先得把配置文件提供，mybatis里面提供了一个工具类读取配置文件
+
+```java
+  /**
+   * Returns a resource on the classpath as a Stream object
+   *
+   * @param resource The resource to find
+   * @return The resource
+   * @throws java.io.IOException If the resource cannot be found or read
+   */
+org.apache.ibatis.io.Resources#getResourceAsStream(String resource)
+```
+
+
 
 
 
@@ -561,6 +652,73 @@ public interface Cache {
 - WeakCache
 - SynchronizedCache
   - 序列化缓存装饰器
+
+
+
+
+
+# 事务管理
+
+
+
+`Transaction`
+
+两个实现
+
+- JdbcTransaction
+  - 通过JBDC的方式，简单的事务提交和回滚
+- ManagedTransaction
+  - 事务交由其他框架处理
+
+
+
+
+
+# 工具类
+
+
+
+
+
+- ScriptRunner
+
+用于执行sql语句
+
+- MetaObject
+
+反射工具类，方便的获取和设置对象的属性值
+
+- MetaClass
+
+反射工具类，用于获取类相关的信息，比如是否有默认构造方法，属性是否有getter、setter方法，获取getter、setter的invoker对象
+
+- ObjectFactory
+
+MyBatis每次创建Mapper映射结果对象的新实例时，都会使用一个对象工厂（ObjectFactory）实例来完成
+
+也就是用于反序列化过程的对象构造
+
+
+
+并且提供了自定义扩展功能，实现接口后，或者继承默认实现，在配置文件中通过`objectFactory`标签配置
+
+
+
+- ProxyFactory
+  - 用于实现懒加载功能
+  - 实现
+    - CglibProxyFactory
+    - JavassistProxyFactory
+
+用于创建代理
+
+主要实现由
+
+
+
+
+
+
 
 
 
