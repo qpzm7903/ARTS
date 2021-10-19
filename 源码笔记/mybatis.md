@@ -78,7 +78,7 @@ graph LR
 
 # 初始化
 
-## 配置
+## 配置初始化过程
 
 构造需要由来源，所以首先得把配置文件提供，mybatis里面提供了一个工具类读取配置文件
 
@@ -175,6 +175,170 @@ XMLConfigBuilder里初始化了`Configuration`对象
   - 比较复杂的一块，因为要求读取mapper文件
   - 遍历，使用XMLMapperBuilder，并把configuration传入
     - 会用到XMLStatementBuilder
+
+
+
+分别看看几个XMLBuilder读取配置的时候做了什么
+
+
+
+
+
+### XMLConfigureBuilder
+
+初始化Configuration实例，后续配置读取都会往里面赋值
+
+
+
+
+
+### XMLMapperBuilder
+
+解析一个指定的mapper.xml文件
+
+构造函数
+
+```java
+  private XMLMapperBuilder(XPathParser parser, Configuration configuration, String resource, Map<String, XNode> sqlFragments) {
+    super(configuration);
+    this.builderAssistant = new MapperBuilderAssistant(configuration, resource);
+    this.parser = parser;
+    this.sqlFragments = sqlFragments;
+    this.resource = resource;
+  }
+```
+
+
+
+辅助类
+
+``` java
+MapperBuilderAssistant
+```
+
+
+
+解析的配置有
+
+- cache-ref
+
+- cache
+
+- parameterMap
+
+- resultMap
+
+- sql
+
+- select|insert|update|delete
+
+  - 通过XMLStatementBuilder构建
+
+  - ```java
+    new XMLStatementBuilder(configuration, builderAssistant, context, requiredDatabaseId);
+    ```
+
+
+
+构建完之后配置后，构建mapper类的代理。通过其私有方法
+
+```java
+private void bindMapperForNamespace() {
+    String namespace = builderAssistant.getCurrentNamespace();
+    if (namespace != null) {
+      Class<?> boundType = null;
+      try {
+        boundType = Resources.classForName(namespace);
+      } catch (ClassNotFoundException e) {
+        // ignore, bound type is not required
+      }
+      if (boundType != null && !configuration.hasMapper(boundType)) {
+        // Spring may not know the real resource name so we set a flag
+        // to prevent loading again this resource from the mapper interface
+        // look at MapperAnnotationBuilder#loadXmlResource
+        configuration.addLoadedResource("namespace:" + namespace);
+        configuration.addMapper(boundType);
+      }
+    }
+  }
+```
+
+
+
+XMLMapperBuilder只是获取了mapper的class，但是构建代理是在configuration里面构造的。
+
+```java
+knownMappers.put(type, new MapperProxyFactory<>(type));
+```
+
+并且这里存放的是代理工厂。需要用的时候就实时new一个出来. 在spring的IOC场景下,可能是单例.
+
+
+
+
+
+### XMLStatementBuilder
+
+构造函数
+
+```
+  public XMLStatementBuilder(Configuration configuration, MapperBuilderAssistant builderAssistant, XNode context, String databaseId) {
+    super(configuration);
+    this.builderAssistant = builderAssistant;
+    this.context = context;
+    this.requiredDatabaseId = databaseId;
+  }
+
+```
+
+可以看到也是使用到辅助类。
+
+
+
+在解析前，需要将引入的`<include>`标签给导入，比如引入的sql，实在初始化的时候就导入了。
+
+
+
+具体解析某个select|insert|update|delete标签里的内容，涉及的内容有
+
+- flushCache
+- useCache
+- resultOrdered
+- parameterType
+- lang
+- useGeneratedKeys
+- statementType
+- fetchSize
+- timeout
+- parameterMap
+- resultMap
+- resultSetType
+- keyProperty
+- keyColumn
+- resultSets
+
+解析完这些配置后，通过辅助类构建，并且添加到Configuration的`Map<String, MappedStatement> mappedStatements`变量里
+
+```java
+   MappedStatement mappedStatement = builderAssistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType,
+        fetchSize, timeout, parameterMap, parameterTypeClass, resultMap, resultTypeClass,
+        resultSetTypeEnum, flushCache, useCache, resultOrdered,
+        keyGenerator, keyProperty, keyColumn, databaseId, langDriver, resultSets);
+```
+
+
+
+
+
+
+
+### XMLMapperEntityResolver
+
+
+
+
+
+
 
 
 
@@ -715,6 +879,10 @@ MyBatis每次创建Mapper映射结果对象的新实例时，都会使用一个�
 主要实现由
 
 
+
+
+
+# 集成spring
 
 
 
