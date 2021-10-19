@@ -68,9 +68,11 @@ stack frames:调用方法入栈,方法结束出栈
 
 
 
-## 探索
+## 探索入门
 
 
+
+### 简单语句
 
 每个java文件都是由指令构成的
 
@@ -106,7 +108,7 @@ javac Test.java
 javap -v Test.class
 ```
 
-
+/* */ 的注释是我加的
 
 得到
 
@@ -116,9 +118,9 @@ public static void main(java.lang.String[]);
     flags: (0x0009) ACC_PUBLIC, ACC_STATIC
     Code:
       stack=2, locals=4, args_size=1
-         0: iconst_1
-         1: istore_1
-         2: iconst_2
+         0: iconst_1 /* 把常量加载到操作数栈 */
+         1: istore_1 /* 把操作数栈栈顶的弹出到局部变量表*/
+         2: iconst_2  /* 把常量2放到操作数栈顶 */
          3: istore_2
          4: iload_1
          5: iload_2
@@ -131,6 +133,320 @@ public static void main(java.lang.String[]);
         line 6: 4
         line 7: 8
 ```
+
+
+
+```mermaid
+flowchart LR
+	操作数栈 -- store --> 局部变量表
+	局部变量表 -- load --> 操作数栈
+	常量 -- const --> 操作数栈
+```
+
+下标表示目标的位置
+
+
+
+
+
+### 方法调用
+
+
+
+```java
+public class Test{
+
+    public static void main(String[] args) {
+        int a = 1;
+        int b = 2;
+        int c = calc(a, b);
+    }
+
+    static int calc(int a, int b) {
+        return (int) Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+    }
+}
+```
+
+依旧
+
+```sh
+javac Test.java
+javap -v Test.class
+```
+
+结果
+
+```sh
+Classfile /mnt/c/Users/qpzm7903/workspace/java/Test.class
+  Last modified Oct 19, 2021; size 437 bytes
+  MD5 checksum efc502eac68cdd2853c62959c285b292
+  Compiled from "Test.java"
+public class Test
+  minor version: 0
+  major version: 55
+  flags: (0x0021) ACC_PUBLIC, ACC_SUPER
+  this_class: #7                          // Test
+  super_class: #8                         // java/lang/Object
+  interfaces: 0, fields: 0, methods: 3, attributes: 1
+Constant pool:
+   #1 = Methodref          #8.#19         // java/lang/Object."<init>":()V
+   #2 = Methodref          #7.#20         // Test.calc:(II)I
+   #3 = Double             2.0d
+   #5 = Methodref          #21.#22        // java/lang/Math.pow:(DD)D
+   #6 = Methodref          #21.#23        // java/lang/Math.sqrt:(D)D
+   #7 = Class              #24            // Test
+   #8 = Class              #25            // java/lang/Object
+   #9 = Utf8               <init>
+  #10 = Utf8               ()V
+  #11 = Utf8               Code
+  #12 = Utf8               LineNumberTable
+  #13 = Utf8               main
+  #14 = Utf8               ([Ljava/lang/String;)V
+  #15 = Utf8               calc
+  #16 = Utf8               (II)I
+  #17 = Utf8               SourceFile
+  #18 = Utf8               Test.java
+  #19 = NameAndType        #9:#10         // "<init>":()V
+  #20 = NameAndType        #15:#16        // calc:(II)I
+  #21 = Class              #26            // java/lang/Math
+  #22 = NameAndType        #27:#28        // pow:(DD)D
+  #23 = NameAndType        #29:#30        // sqrt:(D)D
+  #24 = Utf8               Test
+  #25 = Utf8               java/lang/Object
+  #26 = Utf8               java/lang/Math
+  #27 = Utf8               pow
+  #28 = Utf8               (DD)D
+  #29 = Utf8               sqrt
+  #30 = Utf8               (D)D
+{
+  public Test();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 1: 0
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: (0x0009) ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=2, locals=4, args_size=1
+         0: iconst_1
+         1: istore_1
+         2: iconst_2
+         3: istore_2
+         4: iload_1
+         5: iload_2
+         6: invokestatic  #2                  // Method calc:(II)I
+         9: istore_3
+        10: return
+      LineNumberTable:
+        line 4: 0
+        line 5: 2
+        line 6: 4
+        line 7: 10
+
+  static int calc(int, int);
+    descriptor: (II)I
+    flags: (0x0008) ACC_STATIC
+    Code:
+      stack=6, locals=2, args_size=2
+         0: iload_0
+         1: i2d
+         2: ldc2_w        #3                  // double 2.0d    
+         5: invokestatic  #5                  // Method java/lang/Math.pow:(DD)D
+         8: iload_1
+         9: i2d
+        10: ldc2_w        #3                  // double 2.0d
+        13: invokestatic  #5                  // Method java/lang/Math.pow:(DD)D
+        16: dadd
+        17: invokestatic  #6                  // Method java/lang/Math.sqrt:(D)D
+        20: d2i
+        21: ireturn
+      LineNumberTable:
+        line 10: 0
+}
+```
+
+
+
+```
+i2d
+```
+
+把操作数栈顶的对象从int转为double
+
+
+
+```
+2: ldc2_w        #3                  // double 2.0d   
+```
+
+ldc2_w	将 long 或 do le 型常量值从常量池中推送至栈顶（宽索引）
+
+
+
+```
+6: invokestatic  #2    中的 #2 是个符号引用
+```
+
+行号表示这条命令的起始位置,下一条是它的终止位置.
+
+所以基本都是一个字节,但是 invokestatic命令是3个字节
+
+
+
+
+
+### 创建实例
+
+源码
+
+```java
+public class Test {
+    public static void main(String[] args) {
+        Point a = new Point(1, 1);
+        Point b = new Point(5, 3);
+        int c = a.area(b);
+    }
+}
+
+class Point {
+    int x, y;
+
+    Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public int area(Point b) {
+        int length = Math.abs(b.y - this.y);
+        int width = Math.abs(b.x - this.x);
+        return length * width;
+    }
+}
+```
+
+执行
+
+```sh
+javac Test.java  >>> Test.class Point.class
+javap -v Test.class
+```
+
+输出
+
+```sh
+Classfile /mnt/c/Users/qpzm7903/workspace/java/Test.class
+  Last modified Oct 19, 2021; size 350 bytes
+  MD5 checksum f696785bccb50c6d010d115dcc0efba3
+  Compiled from "Test.java"
+public class Test
+  minor version: 0
+  major version: 55
+  flags: (0x0021) ACC_PUBLIC, ACC_SUPER
+  this_class: #5                          // Test
+  super_class: #6                         // java/lang/Object
+  interfaces: 0, fields: 0, methods: 2, attributes: 1
+Constant pool:
+   #1 = Methodref          #6.#15         // java/lang/Object."<init>":()V
+   #2 = Class              #16            // Point
+   #3 = Methodref          #2.#17         // Point."<init>":(II)V
+   #4 = Methodref          #2.#18         // Point.area:(LPoint;)I
+   #5 = Class              #19            // Test
+   #6 = Class              #20            // java/lang/Object
+   #7 = Utf8               <init>
+   #8 = Utf8               ()V
+   #9 = Utf8               Code
+  #10 = Utf8               LineNumberTable
+  #11 = Utf8               main
+  #12 = Utf8               ([Ljava/lang/String;)V
+  #13 = Utf8               SourceFile
+  #14 = Utf8               Test.java
+  #15 = NameAndType        #7:#8          // "<init>":()V
+  #16 = Utf8               Point
+  #17 = NameAndType        #7:#21         // "<init>":(II)V
+  #18 = NameAndType        #22:#23        // area:(LPoint;)I
+  #19 = Utf8               Test
+  #20 = Utf8               java/lang/Object
+  #21 = Utf8               (II)V
+  #22 = Utf8               area
+  #23 = Utf8               (LPoint;)I
+{
+  public Test();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 1: 0
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: (0x0009) ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=4, locals=4, args_size=1
+         0: new           #2                  // class Point
+         3: dup
+         4: iconst_1
+         5: iconst_1
+         6: invokespecial #3                  // Method Point."<init>":(II)V   这里消费操作数栈的三个值
+         9: astore_1   // 实例引用赋值给局部变量
+        10: new           #2                  // class Point
+        13: dup
+        14: iconst_5
+        15: iconst_3
+        16: invokespecial #3                  // Method Point."<init>":(II)V
+        19: astore_2
+        20: aload_1
+        21: aload_2
+        22: invokevirtual #4                  // Method Point.area:(LPoint;)I
+        25: istore_3
+        26: return
+      LineNumberTable:
+        line 3: 0
+        line 4: 10
+        line 5: 20
+        line 6: 26
+}
+SourceFile: "Test.java"
+```
+
+
+
+new
+
+创建指定的实例, 实例在heap上, 操作数栈上放的是引用
+
+dup
+
+复制栈顶元素, 也就是栈顶前两个都是new出来的对象的引用
+
+invokespecial
+
+调用实例的初始化函数
+
+
+
+invokevirtual
+
+基于实际类型分派方法调用
+
+
+
+### 其他
+
+并不需要掌握所有的指令,知道基本结构, 现查现用即可
+
+
 
 
 
