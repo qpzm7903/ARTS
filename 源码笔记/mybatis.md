@@ -517,21 +517,6 @@ classDiagram
 
 
 
-### Configuration构造过程
-
-构造需要由来源，所以首先得把配置文件提供，mybatis里面提供了一个工具类读取配置文件
-
-```java
-  /**
-   * Returns a resource on the classpath as a Stream object
-   *
-   * @param resource The resource to find
-   * @return The resource
-   * @throws java.io.IOException If the resource cannot be found or read
-   */
-org.apache.ibatis.io.Resources#getResourceAsStream(String resource)
-```
-
 
 
 

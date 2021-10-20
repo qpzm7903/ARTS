@@ -450,3 +450,19 @@ invokevirtual
 
 
 
+## 一些
+
+https://github.com/jon-bell/bytecode-examples
+
+
+
+
+
+## 一些好用的用于操作字节码的库
+
+[asmtools](https://wiki.openjdk.java.net/display/CodeTools/asmtools) - 用于生产环境的 Java .class 文件开发工具。
+
+[Byte Buddy](http://bytebuddy.net/) - 代码生成库：运行时创建 Class 文件而不需要编译器帮助。
+
+[Jitescript](https://github.com/qmx/jitescript) - 和 BiteScript 类似的字节码生成库。
+
