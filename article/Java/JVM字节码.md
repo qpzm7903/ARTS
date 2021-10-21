@@ -466,3 +466,87 @@ https://github.com/jon-bell/bytecode-examples
 
 [Jitescript](https://github.com/qmx/jitescript) - 和 BiteScript 类似的字节码生成库。
 
+[javassist](http://www.javassist.org/) - Javassist (Java Programming Assistant) makes Java bytecode manipulation simple
+
+
+
+
+
+## Java agent
+
+运行时可以进行各种动态的代码修改，而且可以进行无侵入的编程。
+
+retransformed or redefined class bytecode
+
+java标准库没有提供修改字节码的api，但是又很多开源的库提供了。
+
+### 入门参考
+
+https://stackoverflow.com/questions/11898566/tutorials-about-javaagents
+
+描述性文档 https://docs.oracle.com/javase/1.5.0/docs/api/java/lang/instrument/package-summary.html
+
+https://www.javamex.com/tutorials/memory/instrumentation.shtml
+
+
+
+
+
+```java
+import java.lang.instrument.Instrumentation;
+
+class Agent{
+    public static void premain(String args, Instrumentation inst) {
+            System.out.println("hello from agent");
+            System.out.println("args is " + args);
+            System.out.println("inst is " + inst);
+    }
+}
+```
+
+
+
+premain.txt
+
+```
+Premain-Class: Agent
+```
+
+
+
+执行
+
+```sh
+
+javac Agent.java
+jar cmf premain.txt agent.jar Agent.class
+java -javaagent:Agent.jar -jar App.jar
+>>>
+hello from agent
+args is null
+inst is sun.instrument.InstrumentationImpl@548c4f57
+hello world
+```
+
+
+
+
+
+详细参考
+
+https://www.javacodegeeks.com/2015/09/java-agents.html
+
+
+
+### Instrumentation
+
+用于实现java agent，premain函数执行后，才会执行main
+
+
+
+### demo应用 - 捕捉所有http链接的url
+
+很多情况下第三方组件里面的代码无法修改，所以看通过代理这种动态修改字节码的方式做
+
+
+
