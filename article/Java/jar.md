@@ -126,3 +126,10 @@ https://docs.oracle.com/javase/tutorial/deployment/jar/index.html
 
 
 
+
+
+
+
+## TODO
+
+创建jar包的时候怎么把依赖的jar包也打进去，maven是怎么做的

@@ -472,6 +472,12 @@ https://github.com/jon-bell/bytecode-examples
 
 
 
+## 一些字节码项目
+
+监控 https://github.com/stagemonitor/stagemonitor
+
+
+
 ## Java agent
 
 运行时可以进行各种动态的代码修改，而且可以进行无侵入的编程。
@@ -549,4 +555,144 @@ https://www.javacodegeeks.com/2015/09/java-agents.html
 很多情况下第三方组件里面的代码无法修改，所以看通过代理这种动态修改字节码的方式做
 
 
+
+#### 使用javassist的功能类
+
+```java
+import javassist.*;
+
+import java.io.IOException;
+import java.lang.instrument.ClassFileTransformer;
+import java.security.ProtectionDomain;
+
+public class SimpleClassTransformer implements ClassFileTransformer {
+    @Override
+    public byte[] transform(
+            final ClassLoader loader,
+            final String className,
+            final Class<?> classBeingRedefined,
+            final ProtectionDomain protectionDomain,
+            final byte[] classfileBuffer) {
+        if (className.endsWith("sun/net/www/protocol/http/HttpURLConnection")) {
+            try {
+                final ClassPool classPool = ClassPool.getDefault();
+                final CtClass clazz =
+                        classPool.get("sun.net.www.protocol.http.HttpURLConnection");
+                for (final CtConstructor constructor : clazz.getConstructors()) {
+                    constructor.insertAfter("System.out.println(this.getURL());");
+                }
+                byte[] byteCode = clazz.toBytecode();
+                clazz.detach();
+                return byteCode;
+            } catch (final NotFoundException | CannotCompileException | IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return null;
+    }
+}
+```
+
+这里如果使用maven构建工程，则依赖为
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>3.28.0-GA</version>
+        <scope>compile</scope>
+    </dependency>
+</dependencies>
+```
+
+
+
+否则直接在官网下载jar包使用也可以
+
+
+
+#### agent类
+
+```java
+import java.lang.instrument.Instrumentation;
+
+public class SimpleAgent {
+    public static void premain(String agentArgs, Instrumentation inst) {
+        final SimpleClassTransformer transformer = new SimpleClassTransformer();
+        inst.addTransformer(transformer);
+    }
+}
+```
+
+
+
+
+
+#### 业务类
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+
+public class SampleClass {
+    public static void main(String[] args) throws IOException {
+        fetch("http://www.baidu.com");
+        fetch("https://www.zhihu.com/hot");
+    }
+
+    private static void fetch(final String address) throws IOException {
+        final URL url = new URL(address);
+        final URLConnection connection = url.openConnection();
+        try (final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            String inputLine;
+            final StringBuilder sb = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                sb.append(inputLine);
+            }
+            System.out.println("Content size: " + sb.length());
+        }
+    }
+}
+```
+
+
+
+#### 打包验证
+
+先打包业务类
+
+```shell
+javac SampleClass.java
+jar cfe app.jar SampleClass SampleClass.class
+
+// 我这没有用maven工程
+javac -cp javassist.jar SimpleAgent.java  SimpleClassTransformer.java
+echo "Premain-Class: SimpleAgent" > manifest.txt
+jar cfm agent.jar  manifest.txt SimpleAgent.class SimpleClassTransformer.class
+
+// 验证
+java -jar app.jar
+>>>
+Content size: 2283
+Content size: 58821
+
+java -javaagent:agent.jar -cp javassist.jar:. SampleClass
+>>>
+http://www.baidu.com
+Content size: 2283
+https://www.zhihu.com/hot
+Content size: 59074
+```
+
+
+
+
+
+## instrument
+
+https://docs.oracle.com/javase/7/docs/api/java/lang/instrument/package-summary.html
 
