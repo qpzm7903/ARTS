@@ -8,7 +8,13 @@ The Java™ Archive (JAR) file
 
 
 
+## jar命令
+
+直接通过man查看即可
+
 ## Jar基础
+
+
 
 | Operation                                                    | Command                                                      |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -123,6 +129,49 @@ java -jar app.jar
 ##  参考
 
 https://docs.oracle.com/javase/tutorial/deployment/jar/index.html
+
+
+
+## Jar文件规范
+
+https://docs.oracle.com/javase/8/docs/technotes/guides/jar/jar.html#The_META-INF_directory
+
+一个压缩文件，可包含`META-INF`目录。
+
+可以使用jar命令，或者使用java.util.jar API.
+
+
+
+### `META-INF`
+
+> used to store package and extension configuration data, including security, versioning, extension and services.
+
+- MANIFEST.MF
+  -  used to define extension and package related data.
+- INDEX.LIST
+  - 加速加载
+- x.SF
+  - 签名文件
+- x.DSA
+- services/
+  - stores all the service provider configuration files
+
+
+
+#### MANIFEST
+
+主要属性
+
+| key               | value | description                                                  |
+| ----------------- | ----- | ------------------------------------------------------------ |
+| Manifest-Version  |       |                                                              |
+| Created-By        |       |                                                              |
+| Signature-Version |       |                                                              |
+| Class-Path        |       | 空格分隔，用于表明此应用依赖路径                             |
+| Main-Class        |       | The value of this attribute is the class name of the main application class which the launcher will load at startup time.<br />比如 java -jar app.jar 的时候，就是以此属性指定的类来启动的。 |
+|                   |       |                                                              |
+
+
 
 
 
