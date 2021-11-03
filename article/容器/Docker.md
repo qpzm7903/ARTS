@@ -495,6 +495,6 @@ runc：负责创建容器
 
 # 扩展
 
-## Docker compose
+## Docker compose 
 
 单引擎方式进行多容器管理的部署和管理
