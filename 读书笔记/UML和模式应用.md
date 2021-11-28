@@ -1,5 +1,3 @@
-
-
 16 章 UML类图
 
 关联线
@@ -15,27 +13,15 @@ visibility name : type multiplicity = default {property-string}
 - 多重性
 - 角色名
 
-
-
 比如，使用关联关系指明Student具有对Course实例的多个引用
 
 ![image-20211027071708186](D:\workspace\github\ARTS\读书笔记\UML和模式应用.assets\image-20211027071708186.png)
 
-
-
 关键字 一般用 双尖括号表示，也有用大括号表示，比如抽象
-
-
-
-
 
 依赖线
 
 >  准则：在类图中，使用依赖线描述对象之间的全局变量、参数变量、局部变量和静态方法（对其他类的静态方法加以调用）的依赖。
-
-
-
-
 
 组合和聚合
 
@@ -43,13 +29,7 @@ visibility name : type multiplicity = default {property-string}
 
 > 聚合（aggregation）是UML中一种模糊的关联，其不精确地暗示了整体-部分关系（和许多普通关联一样）
 
-
-
 组合是一种很强的整体-部分聚合的关系，部分不能脱离整体存在。部分的生命周期和整体一致。
-
-
-
-
 
 关联类
 
@@ -58,4 +38,3 @@ visibility name : type multiplicity = default {property-string}
 比如
 
 ![image-20211027073133099](D:\workspace\github\ARTS\读书笔记\UML和模式应用.assets\image-20211027073133099.png)
-
