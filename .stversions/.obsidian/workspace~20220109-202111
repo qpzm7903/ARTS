@@ -1,0 +1,120 @@
+{
+  "main": {
+    "id": "8c85a2b2e6acf2e6",
+    "type": "split",
+    "children": [
+      {
+        "id": "737ecf6769b455cf",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "2022-01-08.md",
+            "mode": "source"
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "de39cbc99f4f65f9",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "a103147cff5702be",
+        "type": "leaf",
+        "state": {
+          "type": "file-explorer",
+          "state": {}
+        }
+      },
+      {
+        "id": "7217347eee7972d6",
+        "type": "leaf",
+        "state": {
+          "type": "search",
+          "state": {
+            "query": "",
+            "matchingCase": false,
+            "explainSearch": false,
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical"
+          }
+        }
+      },
+      {
+        "id": "aa0fb07157233edd",
+        "type": "leaf",
+        "state": {
+          "type": "tag",
+          "state": {
+            "sortOrder": "frequency",
+            "useHierarchy": true
+          }
+        }
+      }
+    ],
+    "currentTab": 0
+  },
+  "right": {
+    "id": "1aabbf058813f030",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "aa3747f4994903e9",
+        "type": "leaf",
+        "state": {
+          "type": "backlink",
+          "state": {
+            "file": "2022-01-08.md",
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical",
+            "showSearch": false,
+            "searchQuery": "",
+            "backlinkCollapsed": false,
+            "unlinkedCollapsed": true
+          }
+        }
+      },
+      {
+        "id": "993a80ba0e6d879f",
+        "type": "leaf",
+        "state": {
+          "type": "outgoing-link",
+          "state": {
+            "file": "2022-01-08.md",
+            "linksCollapsed": false,
+            "unlinkedCollapsed": true
+          }
+        }
+      },
+      {
+        "id": "ca787e88bc02173e",
+        "type": "leaf",
+        "state": {
+          "type": "outline",
+          "state": {
+            "file": "2022-01-08.md"
+          }
+        }
+      }
+    ],
+    "currentTab": 0
+  },
+  "active": "737ecf6769b455cf",
+  "lastOpenFiles": [
+    "2022-01-08.md",
+    "2022-01-07.md",
+    "2022-01-06.md",
+    "article/Java/aspectJ入门学习.md",
+    "永久/202112182102.md",
+    "2021-12-26-周总结.md",
+    "2021-12-26.md",
+    "日记/2021-11-30.md",
+    "2021-12-12.md",
+    "2022-01-04.md"
+  ]
+}
