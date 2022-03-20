@@ -532,6 +532,16 @@ line.o: line.c line.h
 
 重新构建
 
+### 规则变量
+http://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html#Automatic-Variables
+
+$< $@ 是什么？[参考回答](https://stackoverflow.com/questions/3220277/what-do-the-makefile-symbols-and-mean)
+
+$< 是第一个参数
+$@ 是目标
+
+### 参考文档
+http://www.gnu.org/software/make/manual/html_node/index.html#SEC_Contents
 
 
 
