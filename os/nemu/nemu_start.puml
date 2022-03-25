@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+
+group nemu_main
+:main;
+
+
+end group
+
+group monitor
+:monitor.c
+:init_monitor();
+:parse_args();
+:init_rand();
+:int_log(log_file());
+:init_mem();
+:init_isa();
+:load_img();
+:init_difftest();
+:init_sdb();
+:welcome();
+end group
+
+
+stop
+
+@enduml

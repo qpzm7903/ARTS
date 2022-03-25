@@ -75,12 +75,17 @@ printf
 
 ## 编译和链接
 
-- 预处理
+- 预处理\预编译
   - 执行#开头的命令
+  - 得到`.i`文件
 - 编译
   - 编程机器码
+  - 得到`.s`文件
+- 汇编
+	- 得到`.o`文件
 - 链接
   - 把目标代码和附加的代码整合
+  - 得到`.out`文件，也就是可执行文件
 
 
 
@@ -342,6 +347,38 @@ p = &a[0][0]; // or p = &a[0];  因为 a[i]  等价于 *(a+i)  那么 &a[i][0] �
 
 
 
+## 指针的进一步理解
+c里的变量都是指针
+指针的的类型是什么，则指针指向的内容就解释成什么。
+
+```shell
+➜  demo cat a.c
+#include<stdio.h>
+#include<assert.h>
+
+int main(int argc, char **argv){
+	int (*f)(int, char **) = main;
+	if (argc != 0){
+		char ***a = &argv, *first = argv[0], ch = argv[0][0];
+		printf("arg = \"%s\"; ch = '%c'\n",first, ch);
+		assert(***a == ch);
+		f(argc-1, argv + 1);
+	}
+	return 0;
+}
+➜  demo gcc a.c 
+➜  demo ./a.out 
+arg = "./a.out"; ch = '.'
+➜  demo ./a.out 1 2 3 4 hello
+arg = "./a.out"; ch = '.'
+arg = "1"; ch = '1'
+arg = "2"; ch = '2'
+arg = "3"; ch = '3'
+arg = "4"; ch = '4'
+arg = "hello"; ch = 'h'
+
+```
+
 
 
 
@@ -426,6 +463,9 @@ int main(int argc, char *argv[]){
 
 
 
+# 宏定义
+宏展开，通过复制、粘贴改变代码的形态
+#include - 粘贴
 
 
 
@@ -837,6 +877,21 @@ int main()
 # 标准库
 
 
+## string
+#string
+
+
+
+### strtok
+
+
+### strtol
+### atoi
+conter a string to integer
+
+
+
+
 
 
 
@@ -922,3 +977,81 @@ void (*signal(int sig, void(*func)(int))(int);
 
 windows + wsl + vscode
 
+
+
+# 预编译
+#预编译
+
+以下两种有什么区别？
+1. `#include <stdio.h>`
+2. `#include "stdio.h"`
+
+
+<> 只去系统目录找
+"" 在当前目录找
+
+但是可以指定系统目录，类似Java的ClassPath。 通过 `-IPath`，常用的`-I.`，表示把当前目录加到系统搜索目录下。
+
+
+include的内容去哪里找？？
+gcc时，通过verbose参数，可以看到完整的命令
+
+
+把include的文件复制粘贴进来。
+
+例如
+在任意一处include一个东西，include的内容再次include一个字符串文件。
+
+```shell
+/mnt/c/Users/qpzm7903/workspace/os1 ᐅ cat a.c
+int main(){
+    printf(
+        #include "a.inc"
+    );
+    return 0;
+}
+/mnt/c/Users/qpzm7903/workspace/os1 ᐅ cat a.inc
+#include "b"
+
+/mnt/c/Users/qpzm7903/workspace/os1 ᐅ cat b
+"hello world\n"
+/mnt/c/Users/qpzm7903/workspace/os1 ᐅ gcc a.c
+a.c: In function ‘main’:
+a.c:2:5: warning: implicit declaration of function ‘printf’ [-Wimplicit-function-declaration]
+    2 |     printf(
+      |     ^~~~~~
+a.c:2:5: warning: incompatible implicit declaration of built-in function ‘printf’
+a.c:1:1: note: include ‘<stdio.h>’ or provide a declaration of ‘printf’
+  +++ |+#include <stdio.h>
+    1 | int main(){
+/mnt/c/Users/qpzm7903/workspace/os1 ᐅ ls
+a.c  a.inc  a.out  b
+/mnt/c/Users/qpzm7903/workspace/os1 ᐅ ./a.out
+hello world
+/mnt/c/Users/qpzm7903/workspace/os1 ᐅ
+``` 
+
+
+
+
+### 有趣的编译
+
+```c
+#include <stdio.h>
+
+int main(){
+#if aa == bb
+     printf("yes\n");
+#else
+     printf("No\n");
+#endif
+}
+```
+
+实际会输出 yes
+
+通过`gcc -E ` 查看预编译的结果
+
+为什么 `aa == bb`?
+
+因为本质是字符串替换，变量没有定义就使用，就是null，null和null相等。

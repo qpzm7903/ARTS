@@ -187,6 +187,13 @@ t(till)
 
 
 
+参考https://harttle.land/2016/08/08/vim-search-in-file.html
+
+### 在block模式下替换
+
+在block模式下，按`:%s`会自动进入区块替换模式
+
+
 ## 文本修改
 
 c（change）
@@ -512,3 +519,100 @@ set autoindent  	"打开自动缩进
 set wildmenu    	"vim命令自动补全
 ```
 
+
+
+##  神奇操作
+
+`!%xxd"` 编辑16进制文件
+
+
+
+# marks  文件内标记
+#marks 
+
+## 意义
+类似书签一样，可以对文件内容打标签，然后在其他地方快速跳转到指定书签的位置。
+书签分为局部和全局。
+
+
+## 标签操作
+
+### 创建标签
+局部是通过`ma-z`来创建的，在当前文件内生效
+全局是通过`mA-Z`来创建的，在所有文件内生效
+
+### 跳转至标签
+```shell
+`a
+or
+'a
+```
+
+### 删除标签
+```
+d'a
+
+d`a
+
+```
+
+
+### 改变标签
+```shell
+c`a 将当前行的标签设置为a
+
+```
+
+
+
+### 查看
+```shell
+:marks  // 列出所有当前的标签
+:marks aB  // 列出a和B的位置
+```
+
+
+### 跳转至前一个标签，或者后一个
+```shell
+]'  ]` 跳转至下一个小写标签行
+[' [`  上一个
+```
+
+
+### 特殊标签 ？？
+
+```shell
+`.   
+`“ 
+`0 跳转至最后一次编辑的地方
+`1 跳转上一次编辑的地方 ,,, `0-9 类推
+'' 调回去
+`` 跳回去
+
+```
+
+## 参考
+https://vim.fandom.com/wiki/Using_marks
+
+
+# 插件
+
+## 插件管理
+#todo
+
+
+### 参考
+https://vimjc.com/vim-plug.html
+
+
+## ctags
+vim版本依赖 8.0以上
+#todo 
+
+
+
+# tab管理
+参考  http://vimdoc.sourceforge.net/htmldoc/tabpage.html
+
+
+？？怎么用
