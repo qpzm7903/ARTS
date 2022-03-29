@@ -4,12 +4,20 @@
     "type": "split",
     "children": [
       {
+<<<<<<< HEAD
         "id": "0a209db674605092",
+=======
+        "id": "d4fb9be371a1e524",
+>>>>>>> e8e442f (update tmux)
         "type": "leaf",
         "state": {
           "type": "markdown",
           "state": {
+<<<<<<< HEAD
             "file": "永久/202203282149.md",
+=======
+            "file": "永久/202203191638.md",
+>>>>>>> e8e442f (update tmux)
             "mode": "source",
             "source": false
           }
@@ -40,7 +48,11 @@
             "state": {
               "type": "search",
               "state": {
+<<<<<<< HEAD
                 "query": "#工具",
+=======
+                "query": "autojump",
+>>>>>>> e8e442f (update tmux)
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -70,7 +82,11 @@
             "state": {
               "type": "backlink",
               "state": {
+<<<<<<< HEAD
                 "file": "永久/202203282149.md",
+=======
+                "file": "永久/202203191638.md",
+>>>>>>> e8e442f (update tmux)
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -87,7 +103,11 @@
             "state": {
               "type": "outline",
               "state": {
+<<<<<<< HEAD
                 "file": "永久/202203282149.md"
+=======
+                "file": "永久/202203191638.md"
+>>>>>>> e8e442f (update tmux)
               }
             }
           },
@@ -97,7 +117,11 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+<<<<<<< HEAD
                 "file": "永久/202203282149.md",
+=======
+                "file": "永久/202203191638.md",
+>>>>>>> e8e442f (update tmux)
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -129,6 +153,7 @@
     "direction": "horizontal",
     "width": 107
   },
+<<<<<<< HEAD
   "active": "0a209db674605092",
   "lastOpenFiles": [
     "永久/202203282149.md",
@@ -141,5 +166,19 @@
     "2022-03-03.md",
     "2022-02-28.md",
     "2022-03-11.md"
+=======
+  "active": "d4fb9be371a1e524",
+  "lastOpenFiles": [
+    "永久/202203191638.md",
+    "2022-03-19.md",
+    "2022-03-26.md",
+    "2022-03-27.md",
+    "2022-01-20.md",
+    "永久/202203282149.md",
+    "永久/202203230647.md",
+    "2022-03-20.md",
+    "2022-03-22.md",
+    "永久/202203212211.md"
+>>>>>>> e8e442f (update tmux)
   ]
 }
