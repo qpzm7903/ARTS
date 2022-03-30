@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "永久/202203282149.md",
+            "file": "永久/202203230647.md",
             "mode": "source",
             "source": false
           }
@@ -40,7 +40,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "autojump",
+                "query": "tag:#tmux",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -70,7 +70,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "永久/202203282149.md",
+                "file": "永久/202203230647.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -87,7 +87,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "永久/202203282149.md"
+                "file": "永久/202203230647.md"
               }
             }
           },
@@ -97,7 +97,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "永久/202203282149.md",
+                "file": "永久/202203230647.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -131,15 +131,15 @@
   },
   "active": "d4fb9be371a1e524",
   "lastOpenFiles": [
-    "永久/202203282149.md",
+    "永久/202203230647.md",
     "永久/202203191638.md",
+    "2022-01-20.md",
+    "永久/202203282149.md",
+    "永久/202203300552.md",
     "2022-03-19.md",
     "2022-03-26.md",
     "2022-03-27.md",
-    "2022-01-20.md",
-    "永久/202203230647.md",
     "2022-03-20.md",
-    "2022-03-22.md",
-    "永久/202203212211.md"
+    "2022-03-22.md"
   ]
 }
