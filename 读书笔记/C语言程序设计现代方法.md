@@ -879,7 +879,7 @@ int main()
 
 ## string
 #string
-
+https://www.unix.com/man-page/posix/7posix/string.h/
 
 
 ### strtok
@@ -888,6 +888,12 @@ int main()
 ### strtol
 ### atoi
 conter a string to integer
+
+
+### strcpy
+复制字符串
+
+
 
 
 
