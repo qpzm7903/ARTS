@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "article/spring/spring学习.md",
+            "file": "永久/202204072136.md",
             "mode": "source",
             "source": false
           }
@@ -40,7 +40,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "security",
+                "query": "configuration",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -70,7 +70,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "article/spring/spring学习.md",
+                "file": "永久/202204072136.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -87,7 +87,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "article/spring/spring学习.md"
+                "file": "永久/202204072136.md"
               }
             }
           },
@@ -97,7 +97,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "article/spring/spring学习.md",
+                "file": "永久/202204072136.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -131,6 +131,7 @@
   },
   "active": "d4fb9be371a1e524",
   "lastOpenFiles": [
+    "永久/202204072136.md",
     "article/spring/spring学习.md",
     "读书笔记/C语言程序设计现代方法.md",
     "永久/202203230647.md",
@@ -139,7 +140,6 @@
     "永久/202203282149.md",
     "永久/202203300552.md",
     "2022-03-19.md",
-    "2022-03-26.md",
-    "2022-03-27.md"
+    "2022-03-26.md"
   ]
 }

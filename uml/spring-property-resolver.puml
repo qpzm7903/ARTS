@@ -1,0 +1,58 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+interface PropertyResolver{
+boolean containsProperty(String key)
+String getProperty(String key)
+String getProperty(String key, String defaultValue)
+<T> T getProperty(String key, Class<T> targetType)
+<T> T getProperty(String key, Class<T> targetType, T defaultValue)
+String getRequiredProperty(String key) throws IllegalStateException
+<T> T getRequiredProperty(String key, Class<T> targetType) throws IllegalStateException
+String resolvePlaceholders(String text)
+String resolveRequiredPlaceholders(String text) throws IllegalArgumentException
+
+}
+PropertyResolver <|.. ConfigurablePropertyResolver
+interface ConfigurablePropertyResolver{
+ConfigurableConversionService getConversionService()
+void setConversionService(ConfigurableConversionService conversionService)
+void setPlaceholderPrefix(String placeholderPrefix)
+void setPlaceholderSuffix(String placeholderSuffix)
+void setValueSeparator(@Nullable String valueSeparator)
+void setIgnoreUnresolvableNestedPlaceholders(boolean ignoreUnresolvableNestedPlaceholders)
+void setRequiredProperties(String... requiredProperties)
+void validateRequiredProperties() throws MissingRequiredPropertiesException
+
+}
+ConfigurablePropertyResolver <|-- AbstractPropertyResolver
+abstract class AbstractPropertyResolver{
+
+}
+
+PropertyResolver <|.. Environment
+interface Environment{
+String[] getActiveProfiles()
+String[] getDefaultProfiles()
+
+}
+
+Environment <|.. AbstractEnvironment
+abstract class AbstractEnvironment{
+}
+note right of AbstractPropertyResolver: 模板模式,getProperty方法都委托到了getProperty(key,type)，让子类实现
+
+
+package  org.springframework.core.env {
+AbstractPropertyResolver <|-- PropertySourcesPropertyResolver
+    class PropertySourcesPropertyResolver{
+    }
+    note top of PropertySourcesPropertyResolver: 最后getProperty委托到了PropertySource
+}
+
+package org.springframework.boot.context.properties.source{
+    AbstractPropertyResolver <|-- ConfigurationPropertySourcesPropertyResolver
+    class ConfigurationPropertySourcesPropertyResolver{
+    }
+}
+@enduml
