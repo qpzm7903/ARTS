@@ -55,4 +55,10 @@ package org.springframework.boot.context.properties.source{
     class ConfigurationPropertySourcesPropertyResolver{
     }
 }
+
+abstract class PropertySource{
+	protected final String name
+
+	protected final T source
+}
 @enduml

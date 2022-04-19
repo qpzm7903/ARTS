@@ -1,9 +1,19 @@
+#spring-security
+#oauth2-0
 # OAuth 2.0是什么
 
-OAuth 2.0是一个授权的框架。在访问A应用时，应用A需要访问一些B应用的资源，但是应用A没有用户对应用B的账号密码，也不应该有。所以就出现了OAuth授权框架，OAuth2.0定义了一个流程，使得应用A能够安全的访问用户在应用B的资源。
+OAuth 2.0是一个**授权的框架**。在访问A应用时，应用A需要访问一些B应用的资源，但是应用A没有用户对应用B的账号密码，也不应该有。所以就出现了OAuth授权框架，OAuth2.0定义了一个流程，使得应用A能够安全的访问用户在应用B的资源。
 
 
+解决什么问题？
 
+开发系统之间的授权
+现代微服务安全
+企业内部认证授权（IAM/SSO)
+
+
+缺点
+是个授权框架，不是认证协议
 # OAuth的组成元素
 
 - resource owner
@@ -43,17 +53,42 @@ OAuth 2.0是一个授权的框架。在访问A应用时，应用A需要访问一
 
 Authorization Grant代表resource owner的授权，其中还包含使用哪种形式的OAuth2.0鉴权类型。OAuth2.0包含四种类型。
 
+![[Pasted image 20220420053716.png]]
+
+
+## 令牌类型
+
+授权码  authorization code token
+用于交换获取访问令牌和刷新令牌
+
+刷新令牌 refresh token
+用于获取访问令牌
+
+beare token
+可以直接访问资源
+
+访问令牌 access token
+代表用户或者服务去访问资源
+
+proof of possession（pop) token
+校验client对token是否有拥有权
+
+
 
 
 ## Authorization Code 授权码
 
 在这种模式下，发起授权申请的时候，会从client跳转到Authorization server，在Authorization server完成resource owner的认证、允许授权后，会带着authorization code跳转回client。
 
+client再拿着authorization code 去Authorization Server去获取access token
+
 此模式下，用户的凭证信息不会泄露给client。
 
 
+最安全，假定资源拥有者和client不在一个设备上
 
-## Implicit 隐式授权
+
+## Implicit 隐式授权 简化模式
 
 简化版的Authorization code模式。
 
@@ -61,6 +96,7 @@ Authorization Grant代表resource owner的授权，其中还包含使用哪种�
 
 因为不是所有的第三方应用都有服务器，现在越来越多的web应用都没有应用服务器，那么第三方应用就没法持久化的保留authorization code。所以把authorization code省略了，client直接持有authorization server返回的Token，然后使用这个token直接访问对应的资源。
 
+也就是Authrization Server返回的就是accss token
 
 
 ## Resource Owner Password Credentials 密码模式
@@ -84,10 +120,28 @@ client可以使用自己的凭证直接向authorization server获取token。
 常见的例子是系统中一些自动化处理的模块需要定期去处理一些东西，此时自动化处理的模块就是client。
 
 
+一般是机机交互。
+
+## 刷新令牌
+accss token过期，client可以使用refresh code去获取新的access token 或者 延期
+
+
+## 选型流程
+![[Pasted image 20220420055416.png]]
+
+
+
+# client 类型
+公开应用 比如 SPA应用，原生APP，一般不存储用户的私密信息
+
+私密应用，web服务器应用  服务器、API 等，可以存用户的私密信息
+
 
 # spring security OAuth demo
 
 按照OAuth的组成元素，需要一个Authorization server，一个resource server，client就由我们手工代替。
+
+[[spring security]]架构参考
 
 
 
@@ -552,6 +606,7 @@ Cookie: JSESSIONID=54832D134E645907B1434963CF95AAA0
 
 
 
+https://medium.com/@darutk/the-simplest-guide-to-oauth-2-0-8c71bd9a15bb 最简向导
 
 
 
