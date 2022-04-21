@@ -581,6 +581,23 @@ Cookie: JSESSIONID=54832D134E645907B1434963CF95AAA0
 ```
 
 
+# 扩展
+- 刷新令牌
+- 用RDS存储用户信息、token
+- 用缓存存token
+- 授权服务器、资源服务器拆分
+- revoke端点
+- introspection端点
+- JWT非对称加密
+- JWE加密、解密JWT令牌
+
+
+
+# 令牌
+令牌类型：
+- 透明令牌，随机生成，无意义，比如auth2.0 token
+- 自包含令牌，by value token，token可包含信息的，自解释，包含数字签名，比如JWT
+[jwt](https://jwt.io/)令牌
 
 
 
@@ -607,6 +624,9 @@ Cookie: JSESSIONID=54832D134E645907B1434963CF95AAA0
 
 
 https://medium.com/@darutk/the-simplest-guide-to-oauth-2-0-8c71bd9a15bb 最简向导
+
+[lab 参考](https://github.com/spring2go/oauth2lab)
+
 
 
 
