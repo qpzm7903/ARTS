@@ -601,8 +601,39 @@ Cookie: JSESSIONID=54832D134E645907B1434963CF95AAA0
 
 
 
+# 下一代微服务安全架构
 
 
+# 资源
+http://www.keycloak.org
+https://www.apereo.org/projects/cas
+https://identityserver.io/
+https://github.com/mitreid-connect/OpenId-Connect-Java-Spring-Server
+
+
+
+OAuth 2.0 cookbook
+
+对接类
+Google oauth client library
+scribeJava
+spring security oauth
+nimbus oauth sdk
+https://oauth.net/code
+
+
+oauth saas 服务
+okta
+https://oauth00.com
+
+
+规范
+https://oauth.net
+https://jwt.io
+
+开源实现
+https://github.com/newnil/oauth2-family-barrel
+https://github.com/monkeyk/oauth2-shiro
 
 
 # 参考
