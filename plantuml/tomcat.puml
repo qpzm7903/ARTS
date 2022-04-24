@@ -1,0 +1,141 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+interface Runnable
+
+class Tomcat
+	class Service
+
+	package "connector"{
+
+	class Connector
+
+    Connector -- ProtocolHandler
+    Connector -- Adapter
+
+	interface ProtocolHandler
+
+	ProtocolHandler -- Executor
+
+	ProtocolHandler -- Endpoint
+
+	ProtocolHandler -- Processor
+
+	class Adapter
+
+	note top of Adapter
+	将Processor的结果适配成Servlet的入参
+	end note
+
+	class AbstractProtocol extends ProtocolHandler
+
+	class AbstractHttp1Protocol extends AbstractProtocol
+
+	class AbstractAjpProtocol extends AbstractProtocol
+
+	class AbstractHttp11JsseProtocol extends AbstractHttp1Protocol
+
+	class Http11NioProtocol extends AbstractHttp11JsseProtocol
+
+	class Http11Nio2Protocol extends AbstractHttp11JsseProtocol
+
+
+
+
+	interface Endpoint
+
+
+
+	Endpoint -- SocketProcessor
+	Endpoint -- Executor
+	Endpoint -- Accepter
+
+	note top of  Endpoint
+	用于处理socket，实现tcp/ip
+	end note
+
+	class AbstractEndpoint extends Endpoint
+	class AbstractJsseEndpoint extends AbstractEndpoint
+	class AprEndpoint extends AbstractEndpoint
+	class Nio2Endpoint extends AbstractJsseEndpoint
+	class NioEndpoint extends AbstractJsseEndpoint
+
+	class Executor
+
+    interface Processor << interface >>
+    note top of Processor
+    实现HTTP协议，上游是Endpoint，下游是Adapter
+    end note
+    class AbstractProcessorLight extends Processor
+	class AbstractProcessor extends AbstractProcessorLight
+    class AjpProcessor extends AbstractProcessor
+    class Http11Processor extends AbstractProcessor
+    class StreamProcessor extends AbstractProcessor
+    class UpgradeProcessorBase extends AbstractProcessorLight
+    class UpgradeProcessorExternal extends UpgradeProcessorBase
+    class UpgradeProcessorInternal extends UpgradeProcessorBase
+
+
+	class Accepter
+
+	class SocketProcessor extends Runnable
+	}
+
+	package "container"{
+	interface Container extends Lifecycle
+	class Engine extends Container
+	class Host extends Container
+	class Context
+	class Wrapper extends Container
+
+interface Pipeline extends Contained {
+  public void addValve(Valve valve);
+  public Valve getBasic();
+  public void setBasic(Valve valve);
+  public Valve getFirst();
+}
+    interface Valve {
+        public Valve getNext();
+        public void setNext(Valve valve);
+        public void invoke(Request request, Response response)
+}
+	}
+
+	note top of Context
+	域名后的上下文
+	end note
+
+	note top of Wrapper
+	pipeline中，basic valve指向servlet
+	end note
+	class Servlet
+	interface Lifecycle
+
+
+
+
+
+note top of Pipeline
+basic 就是当前容器里最后一个valve，
+并且basic指向下一层容器的first
+end note
+
+	Tomcat -- Service
+
+	Service o-- Connector
+
+	Service -- Container
+
+	Container -- Engine
+
+	Engine o-- Host
+
+	Host o-- Context
+
+	Context o-- Wrapper
+
+	Wrapper -- Servlet
+
+	Container -- Pipeline
+
+@enduml
