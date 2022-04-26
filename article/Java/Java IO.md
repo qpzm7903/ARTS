@@ -1,5 +1,7 @@
 Java IO
 #java-io
+#nio 
+#io 
 
 
 
@@ -119,6 +121,7 @@ public static void main(String[] args) {
 ```
 
 ## buffer
+一块连续的内存，封装好，提供对应的方法
 buffer是单通道，也就是同一时刻，只能里面读取数据，或者向里面写数据。
 
 buffer有几个属性
@@ -137,3 +140,28 @@ buffer有几个属性
 		- 表示写入的限制，等于capacity
 - mark
 
+
+
+
+# NIO
+
+# NIO SocketChannel
+连接socket的一种channel，
+
+## NIO File
+
+
+
+# NIO 和 IO 有什么区别
+
+面向
+-  NIO是面向buffer，buffer是可以随意操作的
+-  IO是面向流，流只能不断往前，不能回退
+
+
+阻塞、非阻塞
+-  NIO是非阻塞的
+- IO是阻塞的
+
+
+[ref](https://jenkov.com/tutorials/java-nio/nio-vs-io.html)

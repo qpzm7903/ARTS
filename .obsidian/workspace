@@ -4,22 +4,8 @@
     "type": "split",
     "children": [
       {
-        "id": "d4fb9be371a1e524",
-        "type": "leaf",
-        "dimension": 34.97142857142857,
-        "state": {
-          "type": "markdown",
-          "state": {
-            "file": "永久/202204252234.md",
-            "mode": "source",
-            "source": false
-          }
-        }
-      },
-      {
         "id": "9342f3e2537b3373",
         "type": "leaf",
-        "dimension": 65.02857142857142,
         "state": {
           "type": "markdown",
           "state": {
