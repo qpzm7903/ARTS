@@ -1,4 +1,5 @@
 Java IO
+#java-io
 
 
 
@@ -74,3 +75,65 @@ public class DataStreamDemo {
     }
 }
 ```
+
+
+
+# NIO
+
+Java NIO 由  channel、buffer、slector组成
+
+channel就是数据通道
+buffer和channel之间进行数据读写
+
+
+
+## channel
+步骤：
+- 获取channel
+- 将channel的数据读取到buffer
+- 读取buffer里的数据
+
+例如
+```java
+public static void main(String[] args) {  
+    System.out.println("Working Directory = " + System.getProperty("user.dir"));  
+    try (RandomAccessFile file = new RandomAccessFile("data/test.txt", "rw")) {  
+        FileChannel channel = file.getChannel();  
+        ByteBuffer buffer = ByteBuffer.allocate(24);  
+        int read = channel.read(buffer);  
+        while (read != -1) {  
+            // change to read mode  
+            buffer.flip();  
+            while (buffer.hasRemaining()) {  
+                System.out.print((char) buffer.get());  
+            }  
+            // change to write mode  
+            buffer.clear();  
+            read = channel.read(buffer);  
+        }  
+  
+    } catch (IOException e) {  
+        throw new RuntimeException(e);  
+    }  
+}
+```
+
+## buffer
+buffer是单通道，也就是同一时刻，只能里面读取数据，或者向里面写数据。
+
+buffer有几个属性
+- capacity 容量
+- position
+	- read
+		- 表示读取到的位置
+		- position <= limit < capacity - 1
+	- write
+		- 表示写入的位置
+		- position <= capacity - 1
+- limit
+	- read
+		- 表示读取的限制，等于上次写入的位置
+	- write
+		- 表示写入的限制，等于capacity
+- mark
+
