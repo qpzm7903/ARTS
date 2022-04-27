@@ -90,6 +90,10 @@ buffer和channel之间进行数据读写
 
 
 ## channel
+
+
+channel是什么，是一个通道，可以连接到一些io设备，比如硬件、文件、网络socket、或者程序
+
 步骤：
 - 获取channel
 - 将channel的数据读取到buffer
@@ -165,3 +169,17 @@ buffer有几个属性
 
 
 [ref](https://jenkov.com/tutorials/java-nio/nio-vs-io.html)
+
+
+
+
+# NIO2
+#NIO2
+
+NIO2和NIO有区别？NIO2是异步的，NIO是同步的。
+区别在于是用户线程主动去获取数据，还是通过注册回调的方式，让OS去写入数据。
+
+# ref
+
+[oracle - doc](https://docs.oracle.com/en/java/javase/18/core/java-core-libraries1.html)
+[美团 IO文章](https://zhuanlan.zhihu.com/p/23488863)
