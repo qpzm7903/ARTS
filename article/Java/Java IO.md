@@ -4,6 +4,8 @@ Java IO
 #io 
 
 
+# IO
+
 
 File类，一个抽象类，表示文件或者文件夹。
 
@@ -145,7 +147,55 @@ buffer有几个属性
 - mark
 
 
+## Selector
+选择器，channel可以注册到selector上，并注册相关的事件。
 
+当channel上对应的事件发生时，selector就可以感知到。
+
+通常是在一个线程里不断的循环获取selector上注册、并触发事件的channel，从channel中获取数据。例如下面打开个socketChannel。
+
+```java
+public static void main(String[] args) throws IOException {  
+  
+  
+    Selector selector = Selector.open();  
+    ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();  
+    serverSocketChannel.configureBlocking(false);  
+    serverSocketChannel.bind(new InetSocketAddress("localhost", 9090));  
+    serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);  
+    // see java doc , selector.select() will block util at least one channel is selected  
+  
+    while (selector.select() > 0) {  
+        Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();  
+        while (iterator.hasNext()) {  
+            SelectionKey selectionKey = iterator.next();  
+            if (selectionKey.isAcceptable()) {  
+                SocketChannel socketChannel = serverSocketChannel.accept();  
+                socketChannel.configureBlocking(false);  
+                // one selector can register with many channel  
+                socketChannel.register(selector, SelectionKey.OP_READ);  
+  
+  
+            } else if (selectionKey.isReadable()) {  
+                SocketChannel channel = (SocketChannel) selectionKey.channel();  
+                ByteBuffer buffer = ByteBuffer.allocate(1024);  
+                int length = 0;  
+                while ((length = channel.read(buffer)) > 0) {  
+                    // change to read mode  
+                    buffer.flip();  
+                    extracted(new String(buffer.array(), 0, length));  
+                    // change to write mode  
+                    buffer.clear();  
+                }  
+                channel.close();  
+            }  
+			// when process complete , should remove it
+            iterator.remove();  
+  
+        }  
+    }  
+}
+```
 
 # NIO
 

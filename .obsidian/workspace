@@ -9,8 +9,8 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "article/Java/Java IO.md",
-            "mode": "source",
+            "file": "README.md",
+            "mode": "preview",
             "source": false
           }
         }
@@ -40,7 +40,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#java-io",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -49,8 +49,7 @@
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -70,7 +69,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "article/Java/Java IO.md",
+                "file": "README.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -87,7 +86,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "article/Java/Java IO.md"
+                "file": "README.md"
               }
             }
           },
@@ -97,7 +96,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "article/Java/Java IO.md",
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -123,24 +122,23 @@
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
-    "width": 425.0043029785156,
-    "collapsed": true
+    "width": 425.0043029785156
   },
   "active": "9342f3e2537b3373",
   "lastOpenFiles": [
+    "README.md",
+    "索引/自我学习.md",
+    "永久/202204232150.md",
+    "永久/202204280548.md",
+    "永久/202204272210.md",
+    "2022-02-20.md",
+    "2022-02-01.md",
     "article/Java/Java IO.md",
     "永久/202204252234.md",
-    "永久/202204232200.md",
-    "永久/202112191556.md",
-    "永久/202204232150.md",
-    "永久/202112180545.md",
-    "永久/202112182102.md",
-    "永久/202112182016.md",
-    "永久/202204232205.md",
-    "永久/202204231805.md"
+    "永久/202204232200.md"
   ]
 }
