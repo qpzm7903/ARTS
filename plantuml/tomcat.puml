@@ -4,6 +4,10 @@
 interface Runnable
 
 class Tomcat
+
+note top of Tomcat
+也就是Server
+end note
 	class Service
 
 	package "connector"{
