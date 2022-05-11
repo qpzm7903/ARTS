@@ -9,7 +9,7 @@
         "state": {
           "type": "markdown",
           "state": {
-            "file": "2022-05-10.md",
+            "file": "2022-05-11.md",
             "mode": "source",
             "source": false
           }
@@ -40,7 +40,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#南大计算机基础习题课",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -70,7 +70,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "2022-05-10.md",
+                "file": "2022-05-11.md",
                 "collapseAll": true,
                 "extraContext": true,
                 "sortOrder": "alphabetical",
@@ -87,7 +87,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "2022-05-10.md"
+                "file": "2022-05-11.md"
               }
             }
           },
@@ -97,7 +97,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "2022-05-10.md",
+                "file": "2022-05-11.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": false
               }
@@ -131,6 +131,7 @@
   },
   "active": "e7cfdc99fa2b4386",
   "lastOpenFiles": [
+    "2022-05-11.md",
     "2022-05-10.md",
     "2022-03-22.md",
     "永久/202205051623.md",
@@ -139,7 +140,6 @@
     "2022-03-19.md",
     "2022-03-17.md",
     "2022-01-25.md",
-    "2021-12-10.md",
-    "读书笔记/mysql参考手册.md"
+    "2021-12-10.md"
   ]
 }
