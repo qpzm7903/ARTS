@@ -1,7 +1,7 @@
 https://gobyexample.com/
 
 
-
+#go 
 # 入门
 
 ## 安装
@@ -78,3 +78,13 @@ https://golang.org/doc/modules/developing
 
 
 
+
+# 语法
+变量
+```
+var varname type
+```
+
+函数
+
+标准输入、标注输出
