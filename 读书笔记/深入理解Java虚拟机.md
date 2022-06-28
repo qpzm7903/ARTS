@@ -61,3 +61,65 @@ public class Test{
 	}
 ```
 
+包含的常量可以使用javap来分析
+结果如下
+```shell
+➜  tmp javap -verbose Test
+Classfile /Users/weiyicheng/workspace/tmp/Test.class
+  Last modified 2022年6月27日; size 265 bytes
+  SHA-256 checksum 0eb390fe5b55fc46542827e3f06c3556143973495255e9acb86f6d8e2847a05b
+  Compiled from "Test.java"
+public class Test
+  minor version: 0
+  major version: 61
+  flags: (0x0021) ACC_PUBLIC, ACC_SUPER
+  this_class: #8                          // Test
+  super_class: #2                         // java/lang/Object
+  interfaces: 0, fields: 1, methods: 2, attributes: 1
+Constant pool:
+   #1 = Methodref          #2.#3          // java/lang/Object."<init>":()V
+   #2 = Class              #4             // java/lang/Object
+   #3 = NameAndType        #5:#6          // "<init>":()V
+   #4 = Utf8               java/lang/Object
+   #5 = Utf8               <init>
+   #6 = Utf8               ()V
+   #7 = Fieldref           #8.#9          // Test.m:I
+   #8 = Class              #10            // Test
+   #9 = NameAndType        #11:#12        // m:I
+  #10 = Utf8               Test
+  #11 = Utf8               m
+  #12 = Utf8               I
+  #13 = Utf8               Code
+  #14 = Utf8               LineNumberTable
+  #15 = Utf8               inc
+  #16 = Utf8               ()I
+  #17 = Utf8               SourceFile
+  #18 = Utf8               Test.java
+{
+  public Test();
+    descriptor: ()V
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 1: 0
+
+  public int inc();
+    descriptor: ()I
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=2, locals=1, args_size=1
+         0: aload_0
+         1: getfield      #7                  // Field m:I
+         4: iconst_1
+         5: iadd
+         6: ireturn
+      LineNumberTable:
+        line 4: 0
+}
+SourceFile: "Test.java"
+```
+可以看到常量池里有18个常量
