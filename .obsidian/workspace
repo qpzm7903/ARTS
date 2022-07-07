@@ -40,7 +40,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "深入理解",
+                "query": "#",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -124,10 +124,38 @@
           }
         ],
         "currentTab": 1
+      },
+      {
+        "id": "84552eea0775fe0a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6d2aac38490aadb6",
+            "type": "leaf",
+            "state": {
+              "type": "todo",
+              "state": {}
+            }
+          }
+        ]
+      },
+      {
+        "id": "eb0bd81cdc5f0334",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f43d22be0dcce1bd",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {}
+            }
+          }
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 237
+    "width": 371.375244140625
   },
   "active": "0a209db674605092",
   "lastOpenFiles": [

@@ -1,7 +1,9 @@
 [
   "cm-editor-syntax-highlight-obsidian",
-  "ProxyGithub",
   "table-editor-obsidian",
   "mx-bili-plugin",
-  "media-extended"
+  "media-extended",
+  "obsidian-checklist-plugin",
+  "calendar",
+  "note-refactor-obsidian"
 ]
