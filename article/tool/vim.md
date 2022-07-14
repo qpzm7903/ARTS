@@ -10,12 +10,18 @@ https://coolshell.cn/articles/5426.html
 
 
 # 配置
-
+#vim-config
 配置文件
 
 windows：_vimrc
 
 linux:`~/.vimrc`
+
+或者通过 
+```shell
+$ echo $HOME
+```
+查看用户根目录名，然后再到根目录下修改`.vimrc`配置
 
 
 `:help vimrc-intro` 可以查看帮助文档
@@ -28,6 +34,26 @@ linux:`~/.vimrc`
 
 
 
+## 常用配置
+
+```shell
+# 支持语法高亮
+syntax on
+# 根据文件类型自动配置缩进
+filetype plugin indent on
+# 新行处理缩进
+set autoindent
+# tab展开为空格
+set expandtab
+# tab键4个空格
+set tabstop=4
+# 自动缩进空格数
+set shiftwidth=4
+# 退格
+set backspace=2
+# 修改配色
+colorscheme murphy
+```
 
 
 
