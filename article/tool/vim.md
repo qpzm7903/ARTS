@@ -624,6 +624,15 @@ Vim内置了两个寄存器和外部世界交互
 - `*` 寄存器表示系统粘贴板，在linux终端里是鼠标选择内容，mac、windows是当前的粘贴板内容
 - `+`  寄存器（只用于linux） 用于windows ctrl+c  , ctrl+v 风格的组合键
 
+也可以将默认的改为系统粘贴板
+
+如
+
+```shell
+set clipboard=unamed "复制到系统寄存器 *
+set clipboard=unnamedplus "复制到系统寄存器+
+```
+
 # marks  文件内标记
 #marks 
 
