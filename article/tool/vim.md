@@ -326,19 +326,16 @@ vim file1 file2
 :first 或 :rewind：回到列表中的第一个文件
 :last：打开列表中的最后一个文件
 
-## 多窗口编辑
+# 多窗口与标签
 
 
 
 ### 窗口切割
 
-:split or :sp  水平切割
+- `:split or :sp`  水平切割
+- `:vsplit :vp` 垂直分割
 
 后面可以加文件名，不加就切割当前文件
-
-:vsplit :vp
-
-竖直
 
 
 
@@ -368,12 +365,53 @@ vim file1 file2
 需要增加的列数，默认为 1
 
 
+## 标签
+VIM中使用标签页来组织一个窗口的集合，类似于工作区一样。
+![[Pasted image 20220805073636.png]]
+类似这种效果
+
+
+
+- `:tabnew`  创建标签
+- 标签跳转
+	- `gt`  or `:tabnext`下一个
+	- `gT` or  `:tabprevious` 上一个
+- 
+
+
 
 ## 执行外部命令
 
 `:!command`
 
 `:w filename` 保存当前文件
+
+
+
+# 缓冲区
+- 每个打开的文件都有一个缓冲区
+- `:e filename` 打开其他文件
+- `:b number` 跳转其他缓冲区
+	- 简写 `:bnumber`
+- `:ls`  可以查看
+	- 1 缓冲区编号
+	- `%` 缓冲区位于当前从窗口
+	- a 该缓冲区处于活动状态，已被加载并可见
+如下图
+![[Pasted image 20220805072122.png]]
+
+
+
+# 文件树
+- `:Ex`  完整 `:Explore`
+	- 实际使用的是netrw文件管理器，是vim自带的一个插件
+- 操作
+	- `enter` 打开
+	- `-` 上一层目录
+	- `D` 删除
+	- `R` 重命名
+
+
 
 # 定制
 
@@ -552,6 +590,39 @@ set wildmenu    	"vim命令自动补全
 `!%xxd"` 编辑16进制文件
 
 
+# 复制粘贴、寄存器
+- `y`  yank 复制
+	- 默认复制到默认寄存器中
+		- 默认寄存器是 `"`
+		- 所以`y`的完整命令是`""y`
+	- `ye` 复制到下一个单词结尾
+	- 
+- `p` 粘贴
+	- 完整命令 `""p`
+
+
+## 寄存器
+复制、删除的东西都会存储到寄存器里。VIM支持多种寄存器，用数字、字母、特殊符号来标识。
+
+- `a~z` 所标识的寄存器可以用于手动复制数据
+- `"ayw`  复制一个单词到`a`寄存器
+- `"ap` 从a寄存器中粘贴到指定位置
+
+- `1-10`寄存器
+	- 用于存储最后10此操作删除的历史记录，0是最后一次
+	- 如果记性好，可以记住前几次操作的，然后恢复
+
+
+
+- `:reg` 查看所有寄存器的内容
+- `:reg name` 获取指定寄存器的内容
+
+
+## 和外部世界交互
+Vim内置了两个寄存器和外部世界交互
+
+- `*` 寄存器表示系统粘贴板，在linux终端里是鼠标选择内容，mac、windows是当前的粘贴板内容
+- `+`  寄存器（只用于linux） 用于windows ctrl+c  , ctrl+v 风格的组合键
 
 # marks  文件内标记
 #marks 
@@ -622,9 +693,41 @@ https://vim.fandom.com/wiki/Using_marks
 
 
 # 插件
+#vim-plugin
 
-## 插件管理
-#todo
+
+## 加载插件
+在.vimrc中添加
+
+```vim
+# 加载所有插件
+packloadall
+# 为所有插件加载帮助文档
+silent! helptags ALL 
+```
+
+## 插件管理demo
+
+
+### nerdtree
+```shell
+
+mkdir -p ~/.vim/pack/plugins/start
+git clone https://github.com/scrooloose/nerdtree.git ~/.vim/pack/plugins/start/nerdtree
+ 
+```
+
+使用插件
+
+在vim中
+```
+:NERDTree
+```
+就会打开一个新的窗口，在里面展示目录，例如
+![[Pasted image 20220805074105.png]]
+
+
+
 
 
 ### 参考
