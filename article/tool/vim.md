@@ -630,7 +630,7 @@ Vim内置了两个寄存器和外部世界交互
 
 ```shell
 set clipboard=unamed "复制到系统寄存器 *
-set clipboard=unnamedplus "复制到系统寄存器+
+set clipboard=unamed,unnamedplus "复制到系统寄存器+
 ```
 
 # marks  文件内标记
