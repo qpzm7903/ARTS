@@ -1,6 +1,7 @@
 [toc]
 
 # maven
+#maven
 
 
 
@@ -318,6 +319,9 @@ Main-Class: org.springframework.boot.loader.JarLauncher
 | exclusions | 排除传递依赖 |
 
 ### 依赖范围
+#maven-dependency-scope
+
+[参考-官方文档](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html)
 
 | 类型     | 含义                                                         |
 | -------- | ------------------------------------------------------------ |
@@ -350,10 +354,13 @@ Main-Class: org.springframework.boot.loader.JarLauncher
 | -------- | -------- | ---- | ------------ | ----------- |
 | compile  | compile  | N    | N            | **runtime** |
 | test     | test     | N    | N            | test        |
-| provided | provided | N    | **provided** | provided    |
+| provided | provided | N    | N | provided    |
 | runtime  | runtime  | N    | N            | runtime     |
 
-第一列是直接依赖，第一行是第二直接依赖，中间是两者的碰撞
+- 第一列是直接依赖
+- 第一行是间接依赖
+- 中间是两者的碰撞
+- 如果没有列出，就是忽略的，比如system、import的依赖都是忽略的
 
 
 
