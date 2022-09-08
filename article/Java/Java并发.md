@@ -216,3 +216,183 @@ java8的stream提供了并行流，但是一般不轻易使用，因为里面的
         - -  
 
 ## 高级主题
+
+
+
+# 其他
+
+
+## 多线程怎么用？
+
+第一步创建一个线程。
+
+```java
+Thread thread = new Thread();  
+thread.run();  
+thread.start();
+```
+那么这线程到底干啥？
+
+所以要告诉它要做什么
+
+所以Thread在初始化的时候提供了构造器，构造器接受一个叫 Runnable的接口。
+```java
+public Thread(Runnable target) {  
+    this(null, target, "Thread-" + nextThreadNum(), 0);  
+}
+```
+
+那么这个Runnable能干啥
+
+```java
+@FunctionalInterface  
+public interface Runnable {  
+    /**  
+     * When an object implementing interface {@code Runnable} is used  
+     * to create a thread, starting the thread causes the object's     * {@code run} method to be called in that separately executing  
+     * thread.     * <p>  
+     * The general contract of the method {@code run} is that it may  
+     * take any action whatsoever.     *     * @see     java.lang.Thread#run()  
+     */    public abstract void run();  
+}
+```
+
+
+原来是个只有一个`run`方法的Interface。
+
+那么事情简单了。
+
+创建Thread的时候，传入一个Runnable的实现类，Thread会运行这个Runnable里面的run方法。
+
+于是最简单的代码变成了下面这样。
+
+```java
+Thread thread = new Thread(new Runnable() {  
+    @Override  
+    public void run() {  
+        System.out.println("hi, I am a new thread");  
+    }  
+});  
+thread.run();  
+thread.start();
+```
+那么 Thread 的`run` 和 `start` 方法有啥区别？
+
+看一下 `run` 的文档和代码
+
+```
+/**  
+ * If this thread was constructed using a separate * {@code Runnable} run object, then that  
+ * {@code Runnable} object's {@code run} method is called;  
+ * otherwise, this method does nothing and returns. * <p>  
+ * Subclasses of {@code Thread} should override this method.  
+ * * @see     #start()  
+ * @see     #stop()  
+ * @see     #Thread(ThreadGroup, Runnable, String)  
+ */@Override  
+public void run() {  
+    if (target != null) {  
+        target.run();  
+    }  
+}
+```
+
+所以它啥也没干，就直接调用了 `target.run`， `target` 就是创建Thread时时传入的一个`Runnable`对象。
+
+那么 `start` 方法呢？
+
+```java
+/**  
+ * Causes this thread to begin execution; the Java Virtual Machine * calls the {@code run} method of this thread.  
+ * <p>  
+ * The result is that two threads are running concurrently: the  
+ * current thread (which returns from the call to the * {@code start} method) and the other thread (which executes its  
+ * {@code run} method).  
+ * <p>  
+ * It is never legal to start a thread more than once.  
+ * In particular, a thread may not be restarted once it has completed * execution. * * @throws     IllegalThreadStateException  if the thread was already started.  
+ * @see        #run()  
+ * @see        #stop()  
+ */public synchronized void start() {  
+    /**  
+     * This method is not invoked for the main method thread or "system"     * group threads created/set up by the VM. Any new functionality added     * to this method in the future may have to also be added to the VM.     *     * A zero status value corresponds to state "NEW".     */    if (threadStatus != 0)  
+        throw new IllegalThreadStateException();  
+  
+    /* Notify the group that this thread is about to be started  
+     * so that it can be added to the group's list of threads     * and the group's unstarted count can be decremented. */    group.add(this);  
+  
+    boolean started = false;  
+    try {  
+        start0();  
+        started = true;  
+    } finally {  
+        try {  
+            if (!started) {  
+                group.threadStartFailed(this);  
+            }  
+        } catch (Throwable ignore) {  
+            /* do nothing. If start0 threw a Throwable then  
+              it will be passed up the call stack */        }  
+    }  
+}
+```
+
+
+文档说的很清楚，`start()` 调用的时候，会有两个线程同步运行，一个是调用此`start`方法的线程，一个是新的线程（执行传入的`Runnable`对象）。并且还提到`start`方法不能重复执行。那么重复执行会抛出 `IllegalThreadStateException`;
+
+
+那么如何观察是否是两个线程呢？
+```java
+System.out.println("current thread id is " + Thread.currentThread().getId());  
+Thread thread = new Thread(new Runnable() {  
+    @Override  
+    public void run() {  
+        System.out.println("current thread id is " + Thread.currentThread().getId());  
+    }  
+});  
+thread.start();
+```
+通过`Thread`的工具方法获取当前线程的id，输出即可观察。
+结果如下
+```log
+current thread id is 1
+current thread id is 24
+```
+
+
+同时有个疑问  `start`方法会阻塞吗？
+
+```java
+public class ThreadDemo {  
+    public static void main(String[] args) {  
+        Thread thread = new Thread(new Runnable() {  
+            @Override  
+            public void run() {  
+                try {  
+                    Thread.sleep(1000);  
+                } catch (InterruptedException e) {  
+                    throw new RuntimeException(e);  
+                }  
+                printTimeAndThreadId("runnable ");  
+            }  
+        });  
+        thread.start();  
+        printTimeAndThreadId("main ");  
+  
+    }  
+  
+    private static void printTimeAndThreadId(String name) {  
+        System.out.println(name + "thread id is " + Thread.currentThread().getId() +  " at " + System.currentTimeMillis());  
+    }  
+  
+}
+```
+
+输出结果
+```log
+main thread id is 1 at 1662593396951
+runnable thread id is 24 at 1662593397952
+```
+说明不会阻塞
+
+
