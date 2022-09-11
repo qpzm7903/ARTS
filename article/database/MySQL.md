@@ -126,11 +126,20 @@ ALTER USER 'root'@'localhost' identified with mysql_native_password by 'admin';
 ```
 
 # docker mysql
+#docker-mysql
+
 
 ```bash
-docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql
+docker run --name some-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql 
 ```
 
+https://hub.docker.com/_/mysql
+
+
+查看支持的配置
+```console
+$ docker run -it --rm mysql:tag --verbose --help
+```
 
 
 ## 参考
