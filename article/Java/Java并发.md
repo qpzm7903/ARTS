@@ -133,6 +133,11 @@ public interface ExecutorService extends Executor {
 }
 ```
 
+线程池的作用：
+- 避免反复创建线程
+- 池化，无需等待，提高响应速度
+- 
+
 ### Executors提供了许多静态工厂方法来创建线程池
 
 1、newCachedThreadPool
@@ -183,6 +188,24 @@ workQueue：
 阿里巴巴Java手册里面建议用ThreadPoolExecutor，这能让读代码的人明确知道线程池的运行规则，避免资源耗尽。
 
 
+## executor的生命周期
+JVM只有所有（非守护）线程全部终止后才会退出。如果无法正确关闭executor，JVM将无法结束。
+
+ExecutorService 扩展了 Executor
+```java
+public interface ExecutorService extends Executor{
+	void shutdown();
+	List<Runnable> shuwdownNow();
+	boolean isShutdown();
+	boolean isTerminated();
+	boolean awaitTermination(long timtout, TimeUnit unit);
+	...
+}
+```
+
+shutdown 方法会平滑关闭，不接受新任务，等待所有已提交任务执行完成。
+
+
 
 
 
@@ -222,7 +245,7 @@ java8的stream提供了并行流，但是一般不轻易使用，因为里面的
 # 其他
 
 
-## 多线程怎么用？
+## 线程怎么用？
 
 第一步创建一个线程。
 
@@ -394,5 +417,21 @@ main thread id is 1 at 1662593396951
 runnable thread id is 24 at 1662593397952
 ```
 说明不会阻塞
+
+## 如何从线程中获取返回值？
+
+使用[callable](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Callable.html)
+
+先看看文档
+> A task that returns a result and may throw an exception. Implementors define a single method with no arguments called `call`.
+
+> The `Callable` interface is similar to [`Runnable`](https://docs.oracle.com/javase/8/docs/api/java/lang/Runnable.html "interface in java.lang"), in that both are designed for classes whose instances are potentially executed by another thread. A `Runnable`, however, does not return a result and cannot throw a checked exception.
+
+能返回值，和Runnable很像。
+
+
+Runnable可以给线程执行，那么Callable呢？Thread没有关于Callable的方法。回到文档，文档说可以
+
+>https://docs.oracle.com/javase/tutorial/essential/concurrency/executors.html
 
 
