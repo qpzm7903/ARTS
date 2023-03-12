@@ -1,0 +1,8 @@
+{
+	"nodes":[
+		{"id":"5cf3ad1d5fb91d3b","x":-220,"y":-320,"width":480,"height":660,"type":"group","label":"未命名组"},
+		{"id":"791594dce09835c2","x":-200,"y":254,"width":300,"height":66,"type":"text","text":""},
+		{"id":"71b3ce63a1a71638","x":-200,"y":-300,"width":480,"height":443,"type":"file","file":"日记/2023-03-01.md"}
+	],
+	"edges":[]
+}

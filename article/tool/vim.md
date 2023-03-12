@@ -754,3 +754,97 @@ vim版本依赖 8.0以上
 
 
 ？？怎么用
+
+
+# ideaVim
+
+https://github.com/JetBrains/ideavim#get-early-access
+
+
+参考配置
+```
+set clipboard=unamed,unnamedplus  
+  
+  
+""" Map leader to space ---------------------  
+let mapleader=" "  
+  
+""" Plugins  --------------------------------  
+set surround  
+set multiple-cursors  
+set commentary  
+set argtextobj  
+set easymotion  
+set textobj-entire  
+set ReplaceWithRegister  
+set exchange  
+  
+""" Plugin settings -------------------------  
+let g:argtextobj_pairs="[:],(:),<:>"  
+  
+""" Idea specific settings ------------------  
+set ideajoin  
+set ideastatusicon=gray  
+set idearefactormode=keep  
+  
+""" Mappings --------------------------------  
+map <leader>f <Plug>(easymotion-s)  
+map <leader>e <Plug>(easymotion-f)  
+  
+map <leader>d :action Debug<CR>  
+map <leader>r :action RenameElement<CR>  
+map <leader>c :action Stop<CR>  
+map <leader>z :action ToggleDistractionFreeMode<CR>  
+  
+map <leader>s :action SelectInProjectView<CR>  
+map <leader>a :action Annotate<CR>  
+map <leader>h :action Vcs.ShowTabbedFileHistory<CR>  
+map <S-Space> :action GotoNextError<CR>  
+  
+map <leader>b :action ToggleLineBreakpoint<CR>  
+map <leader>o :action FileStructurePopup<CR>
+```
+
+
+-   `let mapleader=" "`：将 `<Leader>` 键映射为空格键。
+    
+-   `set surround`：启用 surround 插件，用于快速添加、删除和替换括号、引号等符号。
+    
+-   `set multiple-cursors`：启用 multiple-cursors 插件，用于同时编辑多个相同的文本。
+    
+-   `set commentary`：启用 commentary 插件，用于快速注释和取消注释代码。
+    
+-   `set argtextobj`：启用 argtextobj 插件，用于选择和操作函数参数。
+    
+-   `set easymotion`：启用 easymotion 插件，用于快速跳转和选择文本。
+    
+-   `set textobj-entire`：启用 textobj-entire 插件，用于选择整个文件。
+    
+-   `set ReplaceWithRegister`：启用 ReplaceWithRegister 插件，用于替换选中文本为指定的寄存器中的内容。
+    
+-   `set exchange`：启用 exchange 插件，用于交换两个文本块的位置。
+    
+-   `let g:argtextobj_pairs="[:],(:),<:>"`：设置 argtextobj 插件要匹配的函数参数列表的字符，如 `()`、`[]` 和 `<>`。
+    
+-   `set ideajoin`：启用 IdeaVim 插件特有的 ideajoin 命令，用于连接下一行的文本到当前行。
+    
+-   `set ideastatusicon=gray`：设置 IdeaVim 插件的状态栏图标为灰色。
+    
+-   `set idearefactormode=keep`：设置重构操作的模式为保留原始内容。
+    
+-   `map <leader>f <Plug>(easymotion-s)`：将 `<Leader>f` 映射为 easymotion-s 命令，用于快速跳转到指定字符。
+    
+-   `map <leader>e <Plug>(easymotion-f)`：将 `<Leader>e` 映射为 easymotion-f 命令，用于快速跳转到指定单词。
+    
+-   `map <leader>d :action Debug<CR>`：将 `<Leader>d` 映射为 Debug 命令，用于调试。
+    
+-   `map <leader>r :action RenameElement<CR>`：将 `<Leader>r` 映射为 RenameElement 命令，用于重命名代码元素。
+    
+-   `map <leader>c :action Stop<CR>`：将 `<Leader>c` 映射为 Stop 命令，用于停止运行程序。
+    
+-   `map <leader>z :action ToggleDistractionFreeMode<CR>`：将 `<Leader>z` 映射为 ToggleDistractionFreeMode 命令，用于开启或关闭无干扰模式。
+    
+-   `map <leader>s :action SelectInProjectView<CR>`：将 `<Leader>s` 映射为 SelectInProjectView 命令，用于在项目视图中选择当前文件。
+
+## 插件参考 
+https://jungejason.github.io/ideavim/
