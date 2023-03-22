@@ -1,0 +1,13 @@
+{
+	"nodes":[
+		{"id":"f8e4f54a3c5d175f","x":920,"y":-370,"width":250,"height":60,"type":"file","file":"阅读、复述英语.md"},
+		{"id":"4feb20ec045c4170","x":-125,"y":-30,"width":250,"height":60,"type":"text","text":"英语"},
+		{"id":"3691c366a4edabc6","x":200,"y":-180,"width":250,"height":60,"type":"text","text":"学习方法推荐"},
+		{"id":"e07062dfa6766543","x":600,"y":-340,"width":250,"height":60,"type":"text","text":"相见恨晚的英语学习方法\n"}
+	],
+	"edges":[
+		{"id":"4ff6f71bd5917432","fromNode":"4feb20ec045c4170","fromSide":"right","toNode":"3691c366a4edabc6","toSide":"left"},
+		{"id":"0388ef0b7703e9a5","fromNode":"3691c366a4edabc6","fromSide":"right","toNode":"e07062dfa6766543","toSide":"left"},
+		{"id":"054a78afe6d9ddba","fromNode":"e07062dfa6766543","fromSide":"right","toNode":"f8e4f54a3c5d175f","toSide":"left"}
+	]
+}
