@@ -1,0 +1,9 @@
+@startuml
+
+abstract Plugin{
+    async onload()
+
+    async onunload()
+}
+
+@enduml
