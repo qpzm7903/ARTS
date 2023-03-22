@@ -1,13 +1,29 @@
 {
 	"nodes":[
-		{"id":"f8e4f54a3c5d175f","x":920,"y":-370,"width":250,"height":60,"type":"file","file":"阅读、复述英语.md"},
-		{"id":"4feb20ec045c4170","x":-125,"y":-30,"width":250,"height":60,"type":"text","text":"英语"},
-		{"id":"3691c366a4edabc6","x":200,"y":-180,"width":250,"height":60,"type":"text","text":"学习方法推荐"},
-		{"id":"e07062dfa6766543","x":600,"y":-340,"width":250,"height":60,"type":"text","text":"相见恨晚的英语学习方法\n"}
+		{"type":"text","text":"英语","id":"4feb20ec045c4170","x":-125,"y":-30,"width":250,"height":60},
+		{"type":"text","text":"学习方法推荐","id":"3691c366a4edabc6","x":200,"y":-180,"width":250,"height":60},
+		{"type":"text","text":"相见恨晚的英语学习方法\n","id":"e07062dfa6766543","x":600,"y":-340,"width":250,"height":60},
+		{"type":"file","file":"阅读、复述英语.md","id":"f8e4f54a3c5d175f","x":980,"y":-580,"width":760,"height":230},
+		{"type":"file","file":"影子跟读.md","id":"bef591fb066175ee","x":980,"y":-280,"width":250,"height":210},
+		{"type":"text","text":"透析阅读法","id":"62e70f235ed46279","x":980,"y":0,"width":250,"height":60},
+		{"type":"text","text":"i+1理论","id":"12b8c91be8f66746","x":1940,"y":-205,"width":250,"height":60},
+		{"type":"text","text":"词典参考","id":"91bd9fd51e9d82d7","x":200,"y":120,"width":250,"height":60},
+		{"type":"text","text":"柯林斯（Collins COBUILD）","id":"787216c2d448815a","x":980,"y":400,"width":250,"height":60},
+		{"type":"text","text":"麦克米伦（Macmillan）","id":"d6200bdc81db7b4b","x":980,"y":560,"width":250,"height":60},
+		{"type":"text","text":"学习词典","id":"008f3065f7868e71","x":620,"y":440,"width":250,"height":50}
 	],
 	"edges":[
 		{"id":"4ff6f71bd5917432","fromNode":"4feb20ec045c4170","fromSide":"right","toNode":"3691c366a4edabc6","toSide":"left"},
 		{"id":"0388ef0b7703e9a5","fromNode":"3691c366a4edabc6","fromSide":"right","toNode":"e07062dfa6766543","toSide":"left"},
-		{"id":"054a78afe6d9ddba","fromNode":"e07062dfa6766543","fromSide":"right","toNode":"f8e4f54a3c5d175f","toSide":"left"}
+		{"id":"054a78afe6d9ddba","fromNode":"e07062dfa6766543","fromSide":"right","toNode":"f8e4f54a3c5d175f","toSide":"left"},
+		{"id":"ab7ded2b59d92e23","fromNode":"e07062dfa6766543","fromSide":"right","toNode":"bef591fb066175ee","toSide":"left"},
+		{"id":"5a9361c2ebaa9071","fromNode":"e07062dfa6766543","fromSide":"right","toNode":"62e70f235ed46279","toSide":"left"},
+		{"id":"7b7588bffa3d613d","fromNode":"f8e4f54a3c5d175f","fromSide":"right","toNode":"12b8c91be8f66746","toSide":"left"},
+		{"id":"bce0779182d6531d","fromNode":"bef591fb066175ee","fromSide":"right","toNode":"12b8c91be8f66746","toSide":"left"},
+		{"id":"cda629442369f305","fromNode":"62e70f235ed46279","fromSide":"right","toNode":"12b8c91be8f66746","toSide":"left"},
+		{"id":"0d5fb78ddcb0cef1","fromNode":"4feb20ec045c4170","fromSide":"right","toNode":"91bd9fd51e9d82d7","toSide":"left"},
+		{"id":"de7990ba5a45ac1d","fromNode":"91bd9fd51e9d82d7","fromSide":"right","toNode":"008f3065f7868e71","toSide":"top"},
+		{"id":"64424777ae484419","fromNode":"008f3065f7868e71","fromSide":"right","toNode":"787216c2d448815a","toSide":"left"},
+		{"id":"287fcce62acd3358","fromNode":"008f3065f7868e71","fromSide":"right","toNode":"d6200bdc81db7b4b","toSide":"left"}
 	]
 }
